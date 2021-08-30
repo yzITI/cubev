@@ -1,2 +1,7 @@
-# v-block
- 
+# Cubev
+
+## Installation
+
+```
+npm i cubev
+```

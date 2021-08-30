@@ -1,6 +1,6 @@
 {
   "name": "cubev",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -26,5 +26,19 @@
     "@vitejs/plugin-vue": "^1.6.0",
     "@vue/compiler-sfc": "^3.0.5",
     "vite": "^2.5.1"
-  }
+  },
+  "description": "## Installation",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yzITI/cubev.git"
+  },
+  "keywords": [
+    "Vue"
+  ],
+  "author": "yzITI",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/yzITI/cubev/issues"
+  },
+  "homepage": "https://github.com/yzITI/cubev#readme"
 }
