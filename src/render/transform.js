@@ -1,4 +1,4 @@
-import store from '../store.js'
+import * as store from '../store.js'
 import {
   shouldTransformRef,
   transformRef
@@ -21,7 +21,7 @@ async function transformTS(src) {
 
 export async function compileFile({ filename, code, compiled }) {
   if (!code.trim()) {
-    store.errors = []
+    store.errors.value = []
     return
   }
 
@@ -35,7 +35,7 @@ export async function compileFile({ filename, code, compiled }) {
     }
 
     compiled.js = code
-    store.errors = []
+    store.errors.value = []
     return
   }
 
@@ -45,7 +45,7 @@ export async function compileFile({ filename, code, compiled }) {
     sourceMap: true
   })
   if (errors.length) {
-    store.errors = errors
+    store.errors.value = errors
     return
   }
 
@@ -53,7 +53,7 @@ export async function compileFile({ filename, code, compiled }) {
     descriptor.styles.some(s => s.lang) ||
     (descriptor.template && descriptor.template.lang)
   ) {
-    store.errors = [
+    store.errors.value = [
       `lang="x" pre-processors for <template> or <style> are currently not ` +
         `supported.`
     ]
@@ -64,7 +64,7 @@ export async function compileFile({ filename, code, compiled }) {
     (descriptor.script && descriptor.script.lang) ||
     (descriptor.scriptSetup && descriptor.scriptSetup.lang)
   if (scriptLang && scriptLang !== 'ts') {
-    store.errors = [`Only lang="ts" is supported for <script> blocks.`]
+    store.errors.value = [`Only lang="ts" is supported for <script> blocks.`]
     return
   }
 
@@ -105,7 +105,7 @@ export async function compileFile({ filename, code, compiled }) {
   let css = ''
   for (const style of descriptor.styles) {
     if (style.module) {
-      store.errors = [`<style module> is not supported in the playground.`]
+      store.errors.value = [`<style module> is not supported in the playground.`]
       return
     }
 
@@ -120,7 +120,7 @@ export async function compileFile({ filename, code, compiled }) {
       // postcss uses pathToFileURL which isn't polyfilled in the browser
       // ignore these errors for now
       if (!styleResult.errors[0].message.includes('pathToFileURL')) {
-        store.errors = styleResult.errors
+        store.errors.value = styleResult.errors
       }
       // proceed even if css compile errors
     } else {
@@ -134,7 +134,7 @@ export async function compileFile({ filename, code, compiled }) {
   }
 
   // clear errors
-  store.errors = []
+  store.errors.value = []
 }
 
 async function doCompileScript(descriptor, id) {
@@ -163,7 +163,7 @@ async function doCompileScript(descriptor, id) {
 
       return [code, compiledScript.bindings]
     } catch (e) {
-      store.errors = [e.stack.split('\n').slice(0, 12).join('\n')]
+      store.errors.value = [e.stack.split('\n').slice(0, 12).join('\n')]
       return
     }
   } else {
@@ -184,7 +184,7 @@ function doCompileTemplate(descriptor, id, bindingMetadata) {
     }
   })
   if (templateResult.errors.length) {
-    store.errors = templateResult.errors
+    store.errors.value = templateResult.errors
     return
   }
 

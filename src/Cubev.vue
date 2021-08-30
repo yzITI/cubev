@@ -9,7 +9,7 @@
 <script setup>
 import { watchEffect } from 'vue'
 import { compileFile } from './render/transform.js'
-import store from './store.js'
+import * as store from './store.js'
 watchEffect(() => compileFile(store.files['App.vue']))
 watchEffect(() => compileFile(store.files['test.js']))
 
