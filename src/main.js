@@ -1,5 +1,5 @@
 // this is for debug
-import './store.js'
+import './init.js'
 import { createApp } from 'vue'
 import App from './App.vue'
 

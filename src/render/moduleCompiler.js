@@ -1,4 +1,3 @@
-import store from '../store.js'
 import { MAIN_FILE } from './transform.js'
 import {
   babelParse,
@@ -8,10 +7,12 @@ import {
   extractIdentifiers,
   isInDestructureAssignment,
   isStaticProperty
-} from 'https://cdn.jsdelivr.net/npm/@vue/compiler-sfc@latest/dist/compiler-sfc.esm-browser.js'
+} from './sfcCompiler.js'
 import { babelParserDefaultPlugins } from '@vue/shared'
 
-export default function () {
+const store = { files: {} }
+export default function (files) {
+  store.files = files
   return processFile(store.files[MAIN_FILE]).reverse()
 }
 
