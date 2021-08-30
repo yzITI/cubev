@@ -7,7 +7,7 @@ import {
   watch
 } from 'vue'
 import srcdoc from './srcdoc.html?raw'
-import { Proxy } from './Proxy.js'
+import { Proxy } from './proxy.js'
 import { MAIN_FILE, vueRuntimeUrl } from './transform.js'
 import compileModule from './moduleCompiler.js'
 import { defineProps } from 'vue'
