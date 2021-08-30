@@ -11,11 +11,13 @@
   ],
   "main": "./dist/cubev.umd.js",
   "module": "./dist/cubev.es.js",
+  "style": "./dist/style.css",
   "exports": {
     ".": {
       "import": "./dist/cubev.es.js",
       "require": "./dist/cubev.umd.js"
-    }
+    },
+    "./style": "./dist/style.css"
   },
   "dependencies": {
     "codemirror": "^5.62.3",
