@@ -3,10 +3,12 @@
 
 <template>
   <div class="bar">
-    <div><img src="../assets/logo.svg" height="32" style="padding-top: 6px;"/></div>
-    <div>Tab1</div>
-    <div>Tab2</div>
-    <div>Tab3</div>
+    <div>
+      <img src="../assets/logo.svg" height="32"/>
+    </div>
+    <div>TAB1mhhh</div>
+    <div>TAB2</div>
+    <div>TAB3</div>
   </div>
 </template>
 
@@ -14,21 +16,23 @@
 .bar {
   overflow: hidden;
   display: flex;
-  height: 42px;
+  height: 32px;
   align-items: center;
-  border: #2D4037 1px solid;
 }
 
 .bar div {
   text-align: center;
-  line-height: 42px;
-  width: 72px;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 32px;
+  padding: 0 10px;
   height: 100%;
-  border: #2D4037 1px solid;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.bar :hover {
+.bar div:hover {
   cursor: pointer;
+  background-color: rgb(79,192,141, 0.5);
 }
 
 </style>
