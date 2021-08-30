@@ -1,21 +1,39 @@
 <template>
   <div class="cubev">
-    <bar></bar>
-    <render></render>
-    <info></info>
+    <bar :store="store"></bar>
+    <render :store="store" :key="renderNum"></render>
+    <info :store="store"></info>
   </div>
 </template>
 
 <script setup>
-import { watchEffect } from 'vue'
+import { watchEffect, defineProps, ref } from 'vue'
 import { compileFile } from './render/transform.js'
-import * as store from './store.js'
-watchEffect(() => compileFile(store.files['App.vue']))
-watchEffect(() => compileFile(store.files['test.js']))
 
 import Render from './render/Render.vue'
 import Bar from './components/Bar.vue'
 import Info from './components/Info.vue'
+import srcApp from './render/srcApp.vue?raw'
+import welcomeCode from './welcomeCode.vue?raw'
+
+const { state } = defineProps({ state: { required: true } })
+
+const renderNum = ref(0)
+
+const store = { // inside
+  files: {},
+  errors: ref([]),
+  runtimeError: ref(''),
+  runtimeWarning: ref('')
+}
+
+function addFile (filename, code) {
+  store.files[filename] = { filename, code, compiled: {} }
+  compileFile(store.files[filename], store)
+}
+addFile('App.vue', srcApp)
+addFile('Cube.vue', state.code || welcomeCode)
+renderNum.value++
 </script>
 
 <style scoped>

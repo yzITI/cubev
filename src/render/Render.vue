@@ -10,8 +10,9 @@ import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './Proxy.js'
 import { MAIN_FILE, vueRuntimeUrl } from './transform.js'
 import compileModule from './moduleCompiler.js'
-import * as store from '../store.js'
+import { defineProps } from 'vue'
 
+const { store } = defineProps(['store'])
 const container = ref()
 
 let sandbox, proxy, stopUpdateWatcher
@@ -161,7 +162,8 @@ async function updateRender() {
   store.runtimeError.value = null
   store.runtimeWarning.value = null
   try {
-    const modules = compileModule()
+    const modules = compileModule(store.files)
+    console.log(modules)
     console.log(`successfully compiled ${modules.length} modules.`)
     // reset modules
     await proxy.eval([

@@ -1,9 +1,13 @@
 <script setup>
+import { ref } from 'vue'
 import Cubev from './Cubev.vue'
+const state1 = {}
+const state2 = {}
 </script>
 
 <template>
-  <cubev></cubev>
+  <cubev :state="state1"></cubev>
+  <cubev :state="state2"></cubev>
 </template>
 
 <style>

@@ -1,4 +1,3 @@
-import * as store from '../store.js'
 import {
   shouldTransformRef,
   transformRef
@@ -19,7 +18,10 @@ async function transformTS(src) {
   }).code
 }
 
-export async function compileFile({ filename, code, compiled }) {
+let store = null
+
+export async function compileFile({ filename, code, compiled }, globalStore) {
+  store = globalStore
   if (!code.trim()) {
     store.errors.value = []
     return

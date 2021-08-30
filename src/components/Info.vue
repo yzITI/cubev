@@ -6,8 +6,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import * as store from '../store.js'
+import { computed, defineProps } from 'vue'
+const { store } = defineProps(['store'])
 const error = computed(() => {
   if (store.errors.value.length) return store.errors.value[0]
   else return store.runtimeError.value
