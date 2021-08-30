@@ -21,6 +21,7 @@ const { state } = defineProps({ state: { required: true } })
 const renderNum = ref(0)
 
 const store = { // inside
+  id: window.cubev++,
   files: {},
   errors: ref([]),
   runtimeError: ref(''),

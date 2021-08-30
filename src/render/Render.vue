@@ -163,8 +163,7 @@ async function updateRender() {
   store.runtimeWarning.value = null
   try {
     const modules = compileModule(store.files)
-    console.log(modules)
-    console.log(`successfully compiled ${modules.length} modules.`)
+    console.log(`[Cubev ${store.id}] successfully compiled ${modules.length} modules.`)
     // reset modules
     await proxy.eval([
       `window.__modules__ = {};window.__css__ = '';`,
