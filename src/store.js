@@ -5,13 +5,19 @@ export const files = {
     filename: 'App.vue',
     code: `
       <script setup>
-      import t frm './test.js'
-      import { ref } from 'vue'
-
+      import t from './test.js'
+      import { ref, watch } from 'vue'
       const msg = ref('Hello World!')
+      watch(() => msg.value, v => { if (v == 'error') throw 'Here is a error!' })
       </script>
 
       <template>
+        <h1 @click="msg = t">{{ msg }}</h1>
+        <h1 @click="msg = t">{{ msg }}</h1>
+        <h1 @click="msg = t">{{ msg }}</h1>
+        <h1 @click="msg = t">{{ msg }}</h1>
+        <h1 @click="msg = t">{{ msg }}</h1>
+        <h1 @click="msg = t">{{ msg }}</h1>
         <h1 @click="msg = t">{{ msg }}</h1>
         <input v-model="msg">
       </template>`,

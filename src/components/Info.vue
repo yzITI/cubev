@@ -1,5 +1,5 @@
 <template>
-  <div class="info">
+  <div v-if="error || warning" class="info">
     <pre v-if="error" style="color: red;">{{ error }}</pre>
     <pre v-if="warning" style="color: yellow;">{{ warning }}</pre>
   </div>
@@ -14,3 +14,14 @@ const error = computed(() => {
 })
 const warning = computed(() => store.runtimeWarning.value)
 </script>
+
+<style scoped>
+div.info {
+  width: 100%;
+  border-top: 1px solid #ccc;
+}
+pre {
+  overflow-x: auto;
+  padding: 0 8px;
+}
+</style>

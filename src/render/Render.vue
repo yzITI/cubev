@@ -76,7 +76,6 @@ function createSandbox() {
       'allow-top-navigation-by-user-activation'
     ].join(' ')
   )
-
   let importMap
   try {
     importMap = JSON.parse(store.importMap || `{}`)
@@ -190,10 +189,14 @@ async function updateRender() {
   <div class="render-container" ref="container"></div>
 </template>
 
-<style scoped>
-.render-container,
-iframe {
-  /*border: none;*/
+<style>
+.render-container {
+  width: 100%;
+  background-color: white;
+}
+.render-container iframe {
+  border: none;
+  width: 100%;
   background-color: #fff;
 }
 </style>

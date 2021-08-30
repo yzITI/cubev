@@ -21,6 +21,7 @@ import Info from './components/Info.vue'
 <style scoped>
 div.cubev {
   min-width: 320px;
+  max-width: 100vw;
   min-height: 100px;
 }
 </style>
