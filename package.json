@@ -1,0 +1,29 @@
+{
+  "name": "cubev",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/cubev.umd.js",
+  "module": "./dist/cubev.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/cubev.es.js",
+      "require": "./dist/cubev.umd.js"
+    }
+  },
+  "dependencies": {
+    "sucrase": "^3.20.1",
+    "vue": "^3.2.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.6.0",
+    "@vue/compiler-sfc": "^3.0.5",
+    "vite": "^2.5.1"
+  }
+}
