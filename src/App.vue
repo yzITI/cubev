@@ -1,5 +1,5 @@
 <script setup>
-import Cubev from './components/Cubev.vue'
+import Cubev from './Cubev.vue'
 </script>
 
 <template>

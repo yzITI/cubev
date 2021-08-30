@@ -13,8 +13,6 @@ import compileModule from './moduleCompiler.js'
 import store from '../store.js'
 
 const container = ref()
-const runtimeError = ref()
-const runtimeWarning = ref()
 
 let sandbox, proxy, stopUpdateWatcher
 
@@ -109,11 +107,11 @@ function createSandbox() {
         msg.includes('Failed to resolve module specifier') ||
         msg.includes('Error resolving module specifier')
       ) {
-        runtimeError.value =
+        store.runtimeError =
           msg.replace(/\. Relative references must.*$/, '') +
           `.\nTip: add an "import-map.json" file to specify import paths for dependencies.`
       } else {
-        runtimeError.value = event.value
+        store.runtimeError = event.value
       }
     },
     on_unhandled_rejection: (event) => {
@@ -121,19 +119,19 @@ function createSandbox() {
       if (typeof error === 'string') {
         error = { message: error }
       }
-      runtimeError.value = 'Uncaught (in promise): ' + error.message
+      store.runtimeError = 'Uncaught (in promise): ' + error.message
     },
     on_console: (log) => {
       if (log.duplicate) return
       if (log.level === 'error') {
         if (log.args[0] instanceof Error) {
-          runtimeError.value = log.args[0].message
+          store.runtimeError = log.args[0].message
         } else {
-          runtimeError.value = log.args[0]
+          store.runtimeError = log.args[0]
         }
       } else if (log.level === 'warn') {
         if (log.args[0].toString().includes('[Vue warn]')) {
-          runtimeWarning.value = log.args
+          store.runtimeWarning = log.args
             .join('')
             .replace(/\[Vue warn\]:/, '')
             .trim()
@@ -161,8 +159,8 @@ async function updateRender() {
   if (import.meta.env.PROD) {
     console.clear()
   }
-  runtimeError.value = null
-  runtimeWarning.value = null
+  store.runtimeError = null
+  store.runtimeWarning = null
   try {
     const modules = compileModule()
     console.log(`successfully compiled ${modules.length} modules.`)
@@ -170,21 +168,20 @@ async function updateRender() {
     await proxy.eval([
       `window.__modules__ = {};window.__css__ = '';`,
       ...modules,
-      `
-  import { createApp as _createApp } from "vue"
-  
-  if (window.__app__) {
-    window.__app__.unmount()
-    document.getElementById('app').innerHTML = ''
-  }
-  
-  document.getElementById('__sfc-styles').innerHTML = window.__css__
-  const app = window.__app__ = _createApp(__modules__["${MAIN_FILE}"].default)
-  app.config.errorHandler = e => console.error(e)
-  app.mount('#app')`.trim()
+      `import { createApp as _createApp } from "vue"
+      
+      if (window.__app__) {
+        window.__app__.unmount()
+        document.getElementById('app').innerHTML = ''
+      }
+      
+      document.getElementById('__sfc-styles').innerHTML = window.__css__
+      const app = window.__app__ = _createApp(__modules__["${MAIN_FILE}"].default)
+      app.config.errorHandler = e => console.error(e)
+      app.mount('#app')`.trim()
     ])
   } catch (e) {
-    runtimeError.value = e.message
+    store.runtimeError = e.message
   }
 }
 </script>
