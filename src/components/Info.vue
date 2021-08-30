@@ -6,13 +6,11 @@
 </template>
 
 <script setup>
-import { watchEffect, ref } from 'vue'
-import store from '../store.js'
-const error = ref(store.runtimeError)
-const warning = ref(store.runtimeWarning)
-watchEffect(() => {
-  if (store.errors.length) error.value = store.errors[0]
-  else error.value = store.runtimeError
-  warning.value = store.runtimeWarning
+import { computed } from 'vue'
+import * as store from '../store.js'
+const error = computed(() => {
+  if (store.errors.value.length) return store.errors.value[0]
+  else return store.runtimeError.value
 })
+const warning = computed(() => store.runtimeWarning.value)
 </script>

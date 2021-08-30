@@ -1,4 +1,4 @@
-import store from '../store.js'
+import * as store from '../store.js'
 import { MAIN_FILE } from './transform.js'
 import {
   babelParse,

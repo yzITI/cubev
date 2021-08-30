@@ -10,7 +10,7 @@ import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './Proxy.js'
 import { MAIN_FILE, vueRuntimeUrl } from './transform.js'
 import compileModule from './moduleCompiler.js'
-import store from '../store.js'
+import * as store from '../store.js'
 
 const container = ref()
 
@@ -33,18 +33,18 @@ watch(
     try {
       const map = JSON.parse(importMap)
       if (!map.imports) {
-        store.errors = [`import-map.json is missing "imports" field.`]
+        store.errors.value = [`import-map.json is missing "imports" field.`]
         return
       }
       if (map.imports.vue) {
-        store.errors = [
+        store.errors.value = [
           'Select Vue versions using the top-right dropdown.\n' +
             'Specifying it in the import map has no effect.'
         ]
       }
       createSandbox()
     } catch (e) {
-      store.errors = [e]
+      store.errors.value = [e]
       return
     }
   }
@@ -81,7 +81,7 @@ function createSandbox() {
   try {
     importMap = JSON.parse(store.importMap || `{}`)
   } catch (e) {
-    store.errors = [`Syntax error in import-map.json: ${e.message}`]
+    store.errors.value = [`Syntax error in import-map.json: ${e.message}`]
     return
   }
 
@@ -107,11 +107,11 @@ function createSandbox() {
         msg.includes('Failed to resolve module specifier') ||
         msg.includes('Error resolving module specifier')
       ) {
-        store.runtimeError =
+        store.runtimeError.value =
           msg.replace(/\. Relative references must.*$/, '') +
           `.\nTip: add an "import-map.json" file to specify import paths for dependencies.`
       } else {
-        store.runtimeError = event.value
+        store.runtimeError.value = event.value
       }
     },
     on_unhandled_rejection: (event) => {
@@ -119,19 +119,19 @@ function createSandbox() {
       if (typeof error === 'string') {
         error = { message: error }
       }
-      store.runtimeError = 'Uncaught (in promise): ' + error.message
+      store.runtimeError.value = 'Uncaught (in promise): ' + error.message
     },
     on_console: (log) => {
       if (log.duplicate) return
       if (log.level === 'error') {
         if (log.args[0] instanceof Error) {
-          store.runtimeError = log.args[0].message
+          store.runtimeError.value = log.args[0].message
         } else {
-          store.runtimeError = log.args[0]
+          store.runtimeError.value = log.args[0]
         }
       } else if (log.level === 'warn') {
         if (log.args[0].toString().includes('[Vue warn]')) {
-          store.runtimeWarning = log.args
+          store.runtimeWarning.value = log.args
             .join('')
             .replace(/\[Vue warn\]:/, '')
             .trim()
@@ -159,8 +159,8 @@ async function updateRender() {
   if (import.meta.env.PROD) {
     console.clear()
   }
-  store.runtimeError = null
-  store.runtimeWarning = null
+  store.runtimeError.value = null
+  store.runtimeWarning.value = null
   try {
     const modules = compileModule()
     console.log(`successfully compiled ${modules.length} modules.`)
@@ -181,7 +181,7 @@ async function updateRender() {
       app.mount('#app')`.trim()
     ])
   } catch (e) {
-    store.runtimeError = e.message
+    store.runtimeError.value = e.message
   }
 }
 </script>
