@@ -193,8 +193,6 @@ async function updateRender() {
 <style scoped>
 .render-container,
 iframe {
-  width: 100%;
-  height: 100%;
   /*border: none;*/
   background-color: #fff;
 }
