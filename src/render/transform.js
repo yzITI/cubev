@@ -1,8 +1,8 @@
 import {
   shouldTransformRef,
   transformRef
-} from 'https://cdn.jsdelivr.net/npm/@vue/compiler-sfc@latest/dist/compiler-sfc.esm-browser.js'
-import * as SFCCompiler from 'https://cdn.jsdelivr.net/npm/@vue/compiler-sfc@latest/dist/compiler-sfc.esm-browser.js'
+} from './sfcCompiler.js'
+import * as SFCCompiler from './sfcCompiler.js'
 import { ref } from 'vue'
 
 export const MAIN_FILE = 'App.vue'

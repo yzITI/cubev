@@ -1,0 +1,1 @@
+export * from 'https://cdn.jsdelivr.net/npm/@vue/compiler-sfc@latest/dist/compiler-sfc.esm-browser.js'

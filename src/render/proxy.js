@@ -9,11 +9,16 @@ export class Proxy {
     this.handlers = handlers
     this.pending_cmds = new Map()
     this.handle_event = e => this.handle_repl_message(e)
+    this.checkResize = setInterval(() => {
+      const h = iframe.contentWindow ? iframe.contentWindow.document.getElementById('app').scrollHeight : 40
+      iframe.height = (h + 24) + 'px'
+    }, 300)
     window.addEventListener('message', this.handle_event, false)
   }
 
   destroy() {
     window.removeEventListener('message', this.handle_event)
+    clearInterval(this.checkResize)
   }
 
   iframe_command(action, args) {

@@ -77,6 +77,7 @@ function createSandbox() {
       'allow-top-navigation-by-user-activation'
     ].join(' ')
   )
+  sandbox.setAttribute('id', 'sandbox' + store.id)
   let importMap
   try {
     importMap = JSON.parse(store.importMap || `{}`)

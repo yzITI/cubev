@@ -1,15 +1,18 @@
 <script setup>
+import { defineProps, computed } from 'vue'
+const { store } = defineProps(['store'])
+const tabs = computed(() => store.tabs)
+function click (t) {
+  store.tab.value = t
+}
 </script>
 
 <template>
   <div class="bar">
-    <div>
+    <div @click="click('home')">
       <img src="../assets/logo.svg" height="32"/>
     </div>
-    <div>TAB1mhhh</div>
-    <div>TAB2</div>
-    <div>TAB3</div>
-    <div>TAB2</div>
+    <div v-for="t in tabs" :class="{ chosen: t == store.tab.value }" @click="click(t)">{{ t }}</div>
   </div>
 </template>
 
@@ -31,11 +34,14 @@
   padding: 0 10px;
   font-family: Arial, Helvetica, sans-serif;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .bar div:hover {
-  cursor: pointer;
   background-color: rgb(79,192,141, 0.5);
 }
 
+.chosen {
+  background-color: rgb(79,192,141, 0.8);
+}
 </style>

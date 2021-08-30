@@ -6,7 +6,10 @@ const state2 = {}
 </script>
 
 <template>
+  <h1>Cubev 1</h1>
   <cubev :state="state1"></cubev>
+  <h1>&nbsp;</h1>
+  <h1>Cubev 2</h1>
   <cubev :state="state2"></cubev>
 </template>
 
