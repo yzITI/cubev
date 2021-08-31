@@ -9,10 +9,10 @@
 import { computed, defineProps } from 'vue'
 const { store } = defineProps(['store'])
 const error = computed(() => {
-  if (store.errors.value.length) return store.errors.value[0]
-  else return store.runtimeError.value
+  if (store.errors.length) return store.errors[0]
+  else return store.runtimeError
 })
-const warning = computed(() => store.runtimeWarning.value)
+const warning = computed(() => store.runtimeWarning)
 </script>
 
 <style scoped>

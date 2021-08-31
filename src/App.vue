@@ -7,10 +7,10 @@ const state2 = {}
 
 <template>
   <h1>Cubev 1</h1>
-  <cubev :state="state1"></cubev>
+  <cubev v-model="state1"></cubev>
   <h1>&nbsp;</h1>
   <h1>Cubev 2</h1>
-  <cubev :state="state2"></cubev>
+  <cubev v-model="state2" :hide-bar="true"></cubev>
 </template>
 
 <style>

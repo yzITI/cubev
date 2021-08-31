@@ -4,18 +4,23 @@ import {
   onMounted,
   onUnmounted,
   watchEffect,
-  watch
+  watch,
+  defineProps
 } from 'vue'
 import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './proxy.js'
 import { MAIN_FILE, vueRuntimeUrl } from './transform.js'
 import compileModule from './moduleCompiler.js'
-import { defineProps } from 'vue'
 
 const { store } = defineProps(['store'])
 const container = ref()
 
-let sandbox, proxy, stopUpdateWatcher
+let sandbox, proxy
+
+// sync store.state
+watch(() => store.state, v => {
+  if (proxy) proxy.sync_state(v)
+}, { deep: true })
 
 // create sandbox on mount
 onMounted(createSandbox)
@@ -34,18 +39,18 @@ watch(
     try {
       const map = JSON.parse(importMap)
       if (!map.imports) {
-        store.errors.value = [`import-map.json is missing "imports" field.`]
+        store.errors = [`import-map.json is missing "imports" field.`]
         return
       }
       if (map.imports.vue) {
-        store.errors.value = [
+        store.errors = [
           'Select Vue versions using the top-right dropdown.\n' +
             'Specifying it in the import map has no effect.'
         ]
       }
       createSandbox()
     } catch (e) {
-      store.errors.value = [e]
+      store.errors = [e]
       return
     }
   }
@@ -53,14 +58,12 @@ watch(
 
 onUnmounted(() => {
   proxy.destroy()
-  stopUpdateWatcher && stopUpdateWatcher()
 })
 
 function createSandbox() {
   if (sandbox) {
     // clear prev sandbox
     proxy.destroy()
-    stopUpdateWatcher()
     container.value.removeChild(sandbox)
   }
 
@@ -82,7 +85,7 @@ function createSandbox() {
   try {
     importMap = JSON.parse(store.importMap || `{}`)
   } catch (e) {
-    store.errors.value = [`Syntax error in import-map.json: ${e.message}`]
+    store.errors = [`Syntax error in import-map.json: ${e.message}`]
     return
   }
 
@@ -108,11 +111,11 @@ function createSandbox() {
         msg.includes('Failed to resolve module specifier') ||
         msg.includes('Error resolving module specifier')
       ) {
-        store.runtimeError.value =
+        store.runtimeError =
           msg.replace(/\. Relative references must.*$/, '') +
           `.\nTip: add an "import-map.json" file to specify import paths for dependencies.`
       } else {
-        store.runtimeError.value = event.value
+        store.runtimeError = event.value
       }
     },
     on_unhandled_rejection: (event) => {
@@ -120,19 +123,19 @@ function createSandbox() {
       if (typeof error === 'string') {
         error = { message: error }
       }
-      store.runtimeError.value = 'Uncaught (in promise): ' + error.message
+      store.runtimeError = 'Uncaught (in promise): ' + error.message
     },
     on_console: (log) => {
       if (log.duplicate) return
       if (log.level === 'error') {
         if (log.args[0] instanceof Error) {
-          store.runtimeError.value = log.args[0].message
+          store.runtimeError = log.args[0].message
         } else {
-          store.runtimeError.value = log.args[0]
+          store.runtimeError = log.args[0]
         }
       } else if (log.level === 'warn') {
         if (log.args[0].toString().includes('[Vue warn]')) {
-          store.runtimeWarning.value = log.args
+          store.runtimeWarning = log.args
             .join('')
             .replace(/\[Vue warn\]:/, '')
             .trim()
@@ -147,27 +150,33 @@ function createSandbox() {
     },
     on_console_group_collapsed: (action) => {
       // group_logs(action.label, true);
+    },
+    on_sync_state: (stateJSON) => {
+      store.state = JSON.parse(stateJSON)
     }
   })
 
   sandbox.addEventListener('load', () => {
     proxy.handle_links()
-    stopUpdateWatcher = watchEffect(updateRender)
+    updateRender()
   })
 }
+
+// todo: this cause double rendering at initialization
+watch(() => store.files, updateRender, { deep: true })
 
 async function updateRender() {
   if (import.meta.env.PROD) {
     console.clear()
   }
-  store.runtimeError.value = null
-  store.runtimeWarning.value = null
+  store.runtimeError = null
+  store.runtimeWarning = null
   try {
     const modules = compileModule(store.files)
     console.log(`[Cubev ${store.id}] successfully compiled ${modules.length} modules.`)
     // reset modules
     await proxy.eval([
-      `window.__modules__ = {};window.__css__ = '';`,
+      `window.__modules__ = {};window.__css__ = '';window.initialState = JSON.parse(unescape(\`${escape(JSON.stringify(store.state))}\`))`,
       ...modules,
       `import { createApp as _createApp } from "vue"
       
@@ -182,7 +191,7 @@ async function updateRender() {
       app.mount('#app')`.trim()
     ])
   } catch (e) {
-    store.runtimeError.value = e.message
+    store.runtimeError = e.message
   }
 }
 </script>

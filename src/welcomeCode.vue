@@ -1,8 +1,9 @@
 <template>
-  <h1>{{ msg }}</h1>
-  <input v-model="msg">
+  <h1>{{ state.msg }}</h1>
+  <input v-model="state.msg">
 </template>
 
 <script setup>
-let msg = $ref('Welcome to Cubev!')
+const { state } = defineProps(['state'])
+if (!state.msg) state.msg = 'hello'
 </script>

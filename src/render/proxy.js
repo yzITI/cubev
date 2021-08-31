@@ -76,11 +76,20 @@ export class Proxy {
         return this.handlers.on_console_group_collapsed(event.data)
       case 'console_group_end':
         return this.handlers.on_console_group_end(event.data)
+      case 'sync_state': {
+        if (this.sentState) this.sentState = false
+        else this.handlers.on_sync_state(event.data.state)
+      }
     }
   }
 
   eval(script) {
     return this.iframe_command('eval', { script })
+  }
+
+  sync_state(state) {
+    this.sentState = true
+    this.iframe.contentWindow.postMessage({ action: 'sync_state', state: JSON.stringify(state) }, '*')
   }
 
   handle_links() {
