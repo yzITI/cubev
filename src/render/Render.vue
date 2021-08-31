@@ -17,11 +17,6 @@ const container = ref()
 
 let sandbox, proxy
 
-// sync store.state
-watch(() => store.state, v => {
-  if (proxy) proxy.sync_state(v)
-}, { deep: true })
-
 // create sandbox on mount
 onMounted(createSandbox)
 
@@ -68,6 +63,7 @@ function createSandbox() {
   }
 
   sandbox = document.createElement('iframe')
+  /*
   sandbox.setAttribute(
     'sandbox',
     [
@@ -79,7 +75,7 @@ function createSandbox() {
       'allow-scripts',
       'allow-top-navigation-by-user-activation'
     ].join(' ')
-  )
+  )*/
   sandbox.setAttribute('id', 'sandbox' + store.id)
   let importMap
   try {
@@ -150,9 +146,6 @@ function createSandbox() {
     },
     on_console_group_collapsed: (action) => {
       // group_logs(action.label, true);
-    },
-    on_sync_state: (stateJSON) => {
-      store.state = JSON.parse(stateJSON)
     }
   })
 
@@ -176,7 +169,7 @@ async function updateRender() {
     console.log(`[Cubev ${store.id}] successfully compiled ${modules.length} modules.`)
     // reset modules
     await proxy.eval([
-      `window.__modules__ = {};window.__css__ = '';window.initialState = JSON.parse(unescape(\`${escape(JSON.stringify(store.state))}\`))`,
+      `window.__modules__ = {};window.__css__ = '';window.cubeId = ${store.id};`,
       ...modules,
       `import { createApp as _createApp } from "vue"
       

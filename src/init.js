@@ -1,3 +1,6 @@
-if (!window.cubev) window.cubev = 1
+import { reactive, ref } from 'vue'
+if (!window.cubev) window.cubev = {
+  context: reactive({ test: 'wa' })
+}
 window.process = { env: {} }
 export default {}
