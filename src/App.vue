@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import Cubev from './Cubev.vue'
 </script>
 

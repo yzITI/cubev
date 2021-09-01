@@ -17,7 +17,7 @@ import Info from './components/Info.vue'
 
 import srcApp from './render/srcApp.vue?raw'
 import welcomeCode from './welcomeCode.vue?raw'
-
+// addons
 import CodeMirror from './codemirror/CodeMirror.vue'
 
 const { cubeId, addons, plugins, hideBar } = defineProps({

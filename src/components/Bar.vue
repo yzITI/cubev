@@ -1,3 +1,12 @@
+<template>
+  <div class="bar">
+    <div @click="click('Cubev')">
+      <img src="../assets/logo.svg" height="32"/>
+    </div>
+    <div v-for="t in tabs" :class="{ chosen: t == store.tab }" @click="click(t)">{{ t }}</div>
+  </div>
+</template>
+
 <script setup>
 import { defineProps, computed } from 'vue'
 const { store } = defineProps(['store'])
@@ -6,15 +15,6 @@ function click (t) {
   store.tab = t
 }
 </script>
-
-<template>
-  <div class="bar">
-    <div @click="click('home')">
-      <img src="../assets/logo.svg" height="32"/>
-    </div>
-    <div v-for="t in tabs" :class="{ chosen: t == store.tab }" @click="click(t)">{{ t }}</div>
-  </div>
-</template>
 
 <style scoped>
 .bar {

@@ -63,7 +63,7 @@ function createSandbox() {
     proxy.destroy()
     container.value.removeChild(sandbox)
   }
-
+  window.cubev[store.id] = {}
   sandbox = document.createElement('iframe')
   sandbox.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
   sandbox.setAttribute('id', 'sandbox' + store.id)
