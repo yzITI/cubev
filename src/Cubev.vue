@@ -1,7 +1,7 @@
 <template>
   <div class="cubev">
     <bar v-if="!hideBar" :store="store"></bar>
-    <render v-show="showRender" :store="store"></render>
+    <render v-if="ready" v-show="showRender" :store="store"></render>
     <code-mirror v-if="store.tab == 'Raw'" v-model="state.code"></code-mirror>
     <info :store="store"></info>
   </div>
@@ -27,11 +27,12 @@ const { cubeId, addons, plugins, hideBar } = defineProps({
   plugins: { default: [] }
 })
 
-if (!window.cubev[cubeId]) window.cubev[cubeId] = reactive({ code: '', data: {} })
-const state = window.cubev[cubeId]
+const ready = ref(false)
+const state = {}
 const store = reactive({ // inside
   id: cubeId,
   files: {},
+  compiled: {},
   tab: '',
   tabs: addons,
   errors: [],
@@ -46,20 +47,25 @@ const showRender = computed(() => {
   }
 })
 
+watch(showRender, v => {
+  if (!v) return
+  store.files['Cube.vue'] = state.code
+  compileFile('Cube.vue', store)
+})
+
 async function addFile (filename, code) {
-  store.files[filename] = { filename, code, compiled: {} }
-  return await compileFile(store.files[filename], store)
+  store.files[filename] = code
+  return await compileFile(filename, store)
 }
 
 async function init () {
   if (!state.code) state.code = welcomeCode
   if (!state.data) state.data = {}
-  await addFile('App.vue', srcApp)
-  await addFile('Cube.vue', state.code)
-  watch(showRender, () => {
-    store.files['Cube.vue'].code = state.code
-    if (showRender.value) compileFile(store.files['Cube.vue'], store)
-  })
+  store.files['App.vue'] = srcApp
+  store.files['Cube.vue'] = state.code
+  await compileFile('App.vue', store)
+  await compileFile('Cube.vue', store)
+  ready.value = true
 }
 init()
 </script>

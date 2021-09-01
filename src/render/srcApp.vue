@@ -1,8 +1,8 @@
 <script setup>
 import Cube from './Cube.vue'
-const ctx = window.cubev.context
+const id = window.cubeId
 </script>
 <template>
-  <input type="text" v-model="ctx.test">
+  <h1>{{ id }}</h1>
   <cube></cube>
 </template>

@@ -1,19 +1,17 @@
 // ReplProxy and srcdoc implementation from Svelte REPL
 // MIT License https://github.com/sveltejs/svelte-repl/blob/master/LICENSE
 
-let uid = 1
-
 export class Proxy {
   constructor(iframe, handlers) {
+    this.uid = 1
     this.iframe = iframe
     this.handlers = handlers
     this.pending_cmds = new Map()
     this.handle_event = e => this.handle_repl_message(e)
     this.checkResize = setInterval(() => {
-      const h = iframe.contentWindow ? iframe.contentWindow.document.getElementById('app').scrollHeight : 40
+      const h = iframe.contentWindow ? iframe.contentWindow.document.body.scrollHeight : 40
       iframe.height = (h + 24) + 'px'
     }, 300)
-    this.iframe.contentWindow.cubev = window.cubev
     window.addEventListener('message', this.handle_event, false)
   }
 
@@ -24,7 +22,7 @@ export class Proxy {
 
   iframe_command(action, args) {
     return new Promise((resolve, reject) => {
-      const cmd_id = uid++
+      const cmd_id = this.uid++
       this.pending_cmds.set(cmd_id, { resolve, reject })
       this.iframe.contentWindow.postMessage({ action, cmd_id, args }, '*')
     })
@@ -44,9 +42,7 @@ export class Proxy {
         handler.reject(e)
       }
 
-      if (action === 'cmd_ok') {
-        handler.resolve(cmd_data.args)
-      }
+      if (action === 'cmd_ok') handler.resolve(cmd_data.args)
     } else {
       console.error('command not found', id, cmd_data, [
         ...this.pending_cmds.keys()

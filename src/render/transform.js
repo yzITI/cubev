@@ -1,16 +1,7 @@
-import {
-  shouldTransformRef,
-  transformRef
-} from './sfcCompiler.js'
+import { shouldTransformRef, transformRef } from './sfcCompiler.js'
 import * as SFCCompiler from './sfcCompiler.js'
-import { ref } from 'vue'
 
-export const MAIN_FILE = 'App.vue'
 export const COMP_IDENTIFIER = `__sfc__`
-
-const defaultVueUrl = 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.runtime.esm-browser.prod.js'
-
-export const vueRuntimeUrl = ref(defaultVueUrl)
 
 async function transformTS(src) {
   return (await import('sucrase')).transform(src, {
@@ -18,10 +9,9 @@ async function transformTS(src) {
   }).code
 }
 
-let store = null
-
-export async function compileFile({ filename, code, compiled }, globalStore) {
-  store = globalStore
+export async function compileFile(filename, store) {
+  let code = store.files[filename]
+  if (!store.compiled[filename]) store.compiled[filename] = { js: '', css: '' }
   if (!code.trim()) {
     store.errors = []
     return
@@ -36,7 +26,7 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
       code = await transformTS(code)
     }
 
-    compiled.js = code
+    store.compiled[filename].js = code
     store.errors = []
     return
   }
@@ -73,7 +63,7 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
   const hasScoped = descriptor.styles.some(s => s.scoped)
   let clientCode = ''
 
-  const clientScriptResult = await doCompileScript(descriptor, id)
+  const clientScriptResult = await doCompileScript(descriptor, id, store)
   if (!clientScriptResult) {
     return
   }
@@ -86,7 +76,8 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     const clientTemplateResult = doCompileTemplate(
       descriptor,
       id,
-      bindings
+      bindings,
+      store
     )
     if (!clientTemplateResult) {
       return
@@ -100,7 +91,7 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
 
   if (clientCode) {
     clientCode += `\n${COMP_IDENTIFIER}.__file = ${JSON.stringify(filename)}` + `\nexport default ${COMP_IDENTIFIER}`
-    compiled.js = clientCode.trimStart()
+    store.compiled[filename].js = clientCode.trimStart()
   }
 
   // styles
@@ -130,16 +121,16 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     }
   }
   if (css) {
-    compiled.css = css.trim()
+    store.compiled[filename].css = css.trim()
   } else {
-    compiled.css = '/* No <style> tags present */'
+    store.compiled[filename].css = '/* No <style> tags present */'
   }
 
   // clear errors
   store.errors = []
 }
 
-async function doCompileScript(descriptor, id) {
+async function doCompileScript(descriptor, id, store) {
   if (descriptor.script || descriptor.scriptSetup) {
     try {
       const compiledScript = SFCCompiler.compileScript(descriptor, {
@@ -173,7 +164,7 @@ async function doCompileScript(descriptor, id) {
   }
 }
 
-function doCompileTemplate(descriptor, id, bindingMetadata) {
+function doCompileTemplate(descriptor, id, bindingMetadata, store) {
   const templateResult = SFCCompiler.compileTemplate({
     source: descriptor.template.content,
     filename: descriptor.filename,

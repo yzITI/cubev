@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 if (!window.cubev) window.cubev = {
   context: reactive({ test: 'wa' })
 }

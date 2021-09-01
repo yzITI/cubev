@@ -1,21 +1,24 @@
+<template>
+  <div class="render-container" ref="container"></div>
+</template>
+
 <script setup>
+const vueRuntimeUrl = 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.runtime.esm-browser.prod.js'
 import {
   ref,
   onMounted,
   onUnmounted,
-  watchEffect,
   watch,
   defineProps
 } from 'vue'
 import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './proxy.js'
-import { MAIN_FILE, vueRuntimeUrl } from './transform.js'
 import compileModule from './moduleCompiler.js'
 
 const { store } = defineProps(['store'])
 const container = ref()
 
-let sandbox, proxy
+let sandbox, proxy, watchCompiled
 
 // create sandbox on mount
 onMounted(createSandbox)
@@ -56,26 +59,13 @@ onUnmounted(() => {
 })
 
 function createSandbox() {
-  if (sandbox) {
-    // clear prev sandbox
+  if (sandbox) { // clear prev sandbox
     proxy.destroy()
     container.value.removeChild(sandbox)
   }
 
   sandbox = document.createElement('iframe')
-  /*
-  sandbox.setAttribute(
-    'sandbox',
-    [
-      'allow-forms',
-      'allow-modals',
-      'allow-pointer-lock',
-      'allow-popups',
-      'allow-same-origin',
-      'allow-scripts',
-      'allow-top-navigation-by-user-activation'
-    ].join(' ')
-  )*/
+  sandbox.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
   sandbox.setAttribute('id', 'sandbox' + store.id)
   let importMap
   try {
@@ -85,14 +75,9 @@ function createSandbox() {
     return
   }
 
-  if (!importMap.imports) {
-    importMap.imports = {}
-  }
-  importMap.imports.vue = vueRuntimeUrl.value
-  const sandboxSrc = srcdoc.replace(
-    /<!--IMPORT_MAP-->/,
-    JSON.stringify(importMap)
-  )
+  if (!importMap.imports) importMap.imports = {}
+  importMap.imports.vue = vueRuntimeUrl
+  const sandboxSrc = srcdoc.replace('<!--IMPORT_MAP-->', JSON.stringify(importMap))
   sandbox.srcdoc = sandboxSrc
   container.value.appendChild(sandbox)
 
@@ -101,40 +86,24 @@ function createSandbox() {
       // pending_imports = progress;
     },
     on_error: (event) => {
-      const msg =
-        event.value instanceof Error ? event.value.message : event.value
-      if (
-        msg.includes('Failed to resolve module specifier') ||
-        msg.includes('Error resolving module specifier')
-      ) {
-        store.runtimeError =
-          msg.replace(/\. Relative references must.*$/, '') +
-          `.\nTip: add an "import-map.json" file to specify import paths for dependencies.`
-      } else {
-        store.runtimeError = event.value
-      }
+      const msg = event.value instanceof Error ? event.value.message : event.value
+      if (msg.includes('Failed to resolve module specifier') || msg.includes('Error resolving module specifier')) {
+        store.runtimeError = msg.replace(/\. Relative references must.*$/, '') + `.\nTip: add an "import-map.json" file to specify import paths for dependencies.`
+      } else store.runtimeError = event.value
     },
     on_unhandled_rejection: (event) => {
-      let error = event.value
-      if (typeof error === 'string') {
-        error = { message: error }
-      }
+      const error = event.value
+      if (typeof error === 'string') error = { message: error }
       store.runtimeError = 'Uncaught (in promise): ' + error.message
     },
     on_console: (log) => {
       if (log.duplicate) return
       if (log.level === 'error') {
-        if (log.args[0] instanceof Error) {
-          store.runtimeError = log.args[0].message
-        } else {
-          store.runtimeError = log.args[0]
-        }
+        if (log.args[0] instanceof Error) store.runtimeError = log.args[0].message
+        else store.runtimeError = log.args[0]
       } else if (log.level === 'warn') {
         if (log.args[0].toString().includes('[Vue warn]')) {
-          store.runtimeWarning = log.args
-            .join('')
-            .replace(/\[Vue warn\]:/, '')
-            .trim()
+          store.runtimeWarning = log.args.join('').replace(/\[Vue warn\]:/, '').trim()
         }
       }
     },
@@ -150,48 +119,41 @@ function createSandbox() {
   })
 
   sandbox.addEventListener('load', () => {
-    proxy.handle_links()
-    updateRender()
+    console.log(`[Cubev ${store.id}] sandbox loaded.`)
+    setTimeout(() => {
+      proxy.handle_links()
+      updateRender()
+      watch(store.compiled, updateRender)
+    }, 30)
   })
 }
 
-// todo: this cause double rendering at initialization
-watch(() => store.files, updateRender, { deep: true })
-
 async function updateRender() {
-  if (import.meta.env.PROD) {
-    console.clear()
-  }
+  if (import.meta.env.PROD) console.clear()
   store.runtimeError = null
   store.runtimeWarning = null
   try {
-    const modules = compileModule(store.files)
+    const modules = compileModule(store.compiled)
     console.log(`[Cubev ${store.id}] successfully compiled ${modules.length} modules.`)
     // reset modules
-    await proxy.eval([
+    proxy.eval([
       `window.__modules__ = {};window.__css__ = '';window.cubeId = ${store.id};`,
       ...modules,
       `import { createApp as _createApp } from "vue"
-      
       if (window.__app__) {
         window.__app__.unmount()
-        document.getElementById('app').innerHTML = ''
+        document.getElementById('srcapp').innerHTML = ''
       }
-      
       document.getElementById('__sfc-styles').innerHTML = window.__css__
-      const app = window.__app__ = _createApp(__modules__["${MAIN_FILE}"].default)
+      const app = window.__app__ = _createApp(__modules__["App.vue"].default)
       app.config.errorHandler = e => console.error(e)
-      app.mount('#app')`.trim()
+      app.mount('#srcapp')`.trim()
     ])
   } catch (e) {
     store.runtimeError = e.message
   }
 }
 </script>
-
-<template>
-  <div class="render-container" ref="container"></div>
-</template>
 
 <style>
 .render-container {
