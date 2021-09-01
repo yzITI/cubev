@@ -92,7 +92,7 @@ function createSandbox() {
       } else store.runtimeError = event.value
     },
     on_unhandled_rejection: (event) => {
-      const error = event.value
+      let error = event.value
       if (typeof error === 'string') error = { message: error }
       store.runtimeError = 'Uncaught (in promise): ' + error.message
     },
