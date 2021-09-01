@@ -15,6 +15,7 @@ const props = defineProps({
   readonly: { default: false }
 })
 
+let code = 'CODE'
 const emit = defineEmits(['update:modelValue'])
 
 onMounted(() => {
@@ -37,11 +38,15 @@ onMounted(() => {
   })
 
   editor.on('change', () => {
-    emit('update:modelValue', editor.getValue())
+    code = editor.getValue()
+    emit('update:modelValue', code)
   })
 
   watchEffect(() => {
-    editor.setValue(props.modelValue)
+    if (props.modelValue != code) {
+      code = props.modelValue
+      editor.setValue(code)
+    }
   })
   watchEffect(() => {
     editor.setOption('mode', props.mode)

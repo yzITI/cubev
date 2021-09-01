@@ -30,8 +30,8 @@ let msg = $ref('Hello Cubev!')
 </script>
 `
 
-const state = {
+const state = $ref({
   code: exampleCode
-}
+})
 </script>
 ```
