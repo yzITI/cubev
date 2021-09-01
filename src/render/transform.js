@@ -1,16 +1,7 @@
-import {
-  shouldTransformRef,
-  transformRef
-} from './sfcCompiler.js'
+import { shouldTransformRef, transformRef } from './sfcCompiler.js'
 import * as SFCCompiler from './sfcCompiler.js'
-import { ref } from 'vue'
 
-export const MAIN_FILE = 'App.vue'
 export const COMP_IDENTIFIER = `__sfc__`
-
-const defaultVueUrl = 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.runtime.esm-browser.prod.js'
-
-export const vueRuntimeUrl = ref(defaultVueUrl)
 
 async function transformTS(src) {
   return (await import('sucrase')).transform(src, {
@@ -18,12 +9,11 @@ async function transformTS(src) {
   }).code
 }
 
-let store = null
-
-export async function compileFile({ filename, code, compiled }, globalStore) {
-  store = globalStore
+export async function compileFile(filename, store) {
+  let code = store.files[filename]
+  if (!store.compiled[filename]) store.compiled[filename] = { js: '', css: '' }
   if (!code.trim()) {
-    store.errors.value = []
+    store.errors = []
     return
   }
 
@@ -36,8 +26,8 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
       code = await transformTS(code)
     }
 
-    compiled.js = code
-    store.errors.value = []
+    store.compiled[filename].js = code
+    store.errors = []
     return
   }
 
@@ -47,7 +37,7 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     sourceMap: true
   })
   if (errors.length) {
-    store.errors.value = errors
+    store.errors = errors
     return
   }
 
@@ -55,7 +45,7 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     descriptor.styles.some(s => s.lang) ||
     (descriptor.template && descriptor.template.lang)
   ) {
-    store.errors.value = [
+    store.errors = [
       `lang="x" pre-processors for <template> or <style> are currently not ` +
         `supported.`
     ]
@@ -66,14 +56,14 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     (descriptor.script && descriptor.script.lang) ||
     (descriptor.scriptSetup && descriptor.scriptSetup.lang)
   if (scriptLang && scriptLang !== 'ts') {
-    store.errors.value = [`Only lang="ts" is supported for <script> blocks.`]
+    store.errors = [`Only lang="ts" is supported for <script> blocks.`]
     return
   }
 
   const hasScoped = descriptor.styles.some(s => s.scoped)
   let clientCode = ''
 
-  const clientScriptResult = await doCompileScript(descriptor, id)
+  const clientScriptResult = await doCompileScript(descriptor, id, store)
   if (!clientScriptResult) {
     return
   }
@@ -86,7 +76,8 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     const clientTemplateResult = doCompileTemplate(
       descriptor,
       id,
-      bindings
+      bindings,
+      store
     )
     if (!clientTemplateResult) {
       return
@@ -100,14 +91,14 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
 
   if (clientCode) {
     clientCode += `\n${COMP_IDENTIFIER}.__file = ${JSON.stringify(filename)}` + `\nexport default ${COMP_IDENTIFIER}`
-    compiled.js = clientCode.trimStart()
+    store.compiled[filename].js = clientCode.trimStart()
   }
 
   // styles
   let css = ''
   for (const style of descriptor.styles) {
     if (style.module) {
-      store.errors.value = [`<style module> is not supported in the playground.`]
+      store.errors = [`<style module> is not supported in the playground.`]
       return
     }
 
@@ -122,7 +113,7 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
       // postcss uses pathToFileURL which isn't polyfilled in the browser
       // ignore these errors for now
       if (!styleResult.errors[0].message.includes('pathToFileURL')) {
-        store.errors.value = styleResult.errors
+        store.errors = styleResult.errors
       }
       // proceed even if css compile errors
     } else {
@@ -130,16 +121,16 @@ export async function compileFile({ filename, code, compiled }, globalStore) {
     }
   }
   if (css) {
-    compiled.css = css.trim()
+    store.compiled[filename].css = css.trim()
   } else {
-    compiled.css = '/* No <style> tags present */'
+    store.compiled[filename].css = '/* No <style> tags present */'
   }
 
   // clear errors
-  store.errors.value = []
+  store.errors = []
 }
 
-async function doCompileScript(descriptor, id) {
+async function doCompileScript(descriptor, id, store) {
   if (descriptor.script || descriptor.scriptSetup) {
     try {
       const compiledScript = SFCCompiler.compileScript(descriptor, {
@@ -165,7 +156,7 @@ async function doCompileScript(descriptor, id) {
 
       return [code, compiledScript.bindings]
     } catch (e) {
-      store.errors.value = [e.stack.split('\n').slice(0, 12).join('\n')]
+      store.errors = [e.stack.split('\n').slice(0, 12).join('\n')]
       return
     }
   } else {
@@ -173,7 +164,7 @@ async function doCompileScript(descriptor, id) {
   }
 }
 
-function doCompileTemplate(descriptor, id, bindingMetadata) {
+function doCompileTemplate(descriptor, id, bindingMetadata, store) {
   const templateResult = SFCCompiler.compileTemplate({
     source: descriptor.template.content,
     filename: descriptor.filename,
@@ -186,7 +177,7 @@ function doCompileTemplate(descriptor, id, bindingMetadata) {
     }
   })
   if (templateResult.errors.length) {
-    store.errors.value = templateResult.errors
+    store.errors = templateResult.errors
     return
   }
 

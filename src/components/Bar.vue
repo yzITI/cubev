@@ -3,7 +3,7 @@ import { defineProps, computed } from 'vue'
 const { store } = defineProps(['store'])
 const tabs = computed(() => store.tabs)
 function click (t) {
-  store.tab.value = t
+  store.tab = t
 }
 </script>
 
@@ -12,7 +12,7 @@ function click (t) {
     <div @click="click('home')">
       <img src="../assets/logo.svg" height="32"/>
     </div>
-    <div v-for="t in tabs" :class="{ chosen: t == store.tab.value }" @click="click(t)">{{ t }}</div>
+    <div v-for="t in tabs" :class="{ chosen: t == store.tab }" @click="click(t)">{{ t }}</div>
   </div>
 </template>
 

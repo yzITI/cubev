@@ -1,4 +1,3 @@
-import { MAIN_FILE } from './transform.js'
 import {
   babelParse,
   MagicString,
@@ -10,30 +9,27 @@ import {
 } from './sfcCompiler.js'
 import { babelParserDefaultPlugins } from '@vue/shared'
 
-const store = { files: {} }
-export default function (files) {
-  store.files = files
-  return processFile(store.files[MAIN_FILE]).reverse()
-}
-
 const modulesKey = `__modules__`
 const exportKey = `__export__`
 const dynamicImportKey = `__dynamic_import__`
 const moduleKey = `__module__`
 
-// similar logic with Vite's SSR transform, except this is targeting the browser
-function processFile(file, seen = new Set()) {
-  if (seen.has(file)) {
+export default function (compiled) {
+  return processFile('App.vue', compiled).reverse()
+}
+
+function processFile(filename, compiled, seen = new Set()) {
+  if (seen.has(filename)) {
     return []
   }
-  seen.add(file)
+  seen.add(filename)
 
-  const { js, css } = file.compiled
+  const { js, css } = compiled[filename]
 
   const s = new MagicString(js)
 
   const ast = babelParse(js, {
-    sourceFilename: file.filename,
+    sourceFilename: filename,
     sourceType: 'module',
     plugins: [...babelParserDefaultPlugins]
   }).program.body
@@ -44,22 +40,23 @@ function processFile(file, seen = new Set()) {
   const importToIdMap = new Map()
 
   function defineImport(node, source) {
-    const filename = source.replace(/^\.\/+/, '')
-    if (!(filename in store.files)) {
-      throw new Error(`File "${filename}" does not exist.`)
+    const fn = source.replace(/^\.\/+/, '')
+    if (!(fn in compiled)) {
+      throw new Error(`File "${fn}" does not exist.`)
     }
-    if (importedFiles.has(filename)) {
-      return importToIdMap.get(filename)
+    if (importedFiles.has(fn)) {
+      return importToIdMap.get(fn)
     }
-    importedFiles.add(filename)
+    importedFiles.add(fn)
     const id = `__import_${importedFiles.size}__`
-    importToIdMap.set(filename, id)
+    importToIdMap.set(fn, id)
     s.appendLeft(
       node.start,
-      `const ${id} = ${modulesKey}[${JSON.stringify(filename)}]\n`
+      `const ${id} = ${modulesKey}[${JSON.stringify(fn)}]\n`
     )
     return id
   }
+
 
   function defineExport(name, local = name) {
     s.append(`\n${exportKey}(${moduleKey}, "${name}", () => ${local})`)
@@ -68,7 +65,7 @@ function processFile(file, seen = new Set()) {
   // 0. instantiate module
   s.prepend(
     `const ${moduleKey} = __modules__[${JSON.stringify(
-      file.filename
+      filename
     )}] = { [Symbol.toStringTag]: "Module" }\n\n`
   )
 
@@ -226,7 +223,7 @@ function processFile(file, seen = new Set()) {
   const processed = [s.toString()]
   if (importedFiles.size) {
     for (const imported of importedFiles) {
-      processed.push(...processFile(store.files[imported], seen))
+      processed.push(...processFile(imported, compiled, seen))
     }
   }
 

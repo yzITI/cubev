@@ -74,6 +74,7 @@ onMounted(() => {
   height: 100%;
 }
 .CodeMirror-scroll {
+  padding-top: 16px;
   overflow-y: hidden !important;
 }
 </style>
