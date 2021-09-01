@@ -1,13 +1,13 @@
 <script setup>
 import Cubev from './Cubev.vue'
+let state1 = $ref({})
+let state2 = $ref({})
 </script>
 
 <template>
-  <h1>Cubev 1</h1>
-  <cubev cube-id="1"></cubev>
-  <h1>&nbsp;</h1>
-  <h1>Cubev 2</h1>
-  <cubev cube-id="2"></cubev>
+  <cubev :state="state1"></cubev>
+  <hr style="margin: 50px;">
+  <cubev :state="state2"></cubev>
 </template>
 
 <style>

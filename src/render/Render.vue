@@ -63,7 +63,7 @@ function createSandbox() {
     proxy.destroy()
     container.value.removeChild(sandbox)
   }
-  window.cubev[store.id] = {}
+  window.cubev.cubes[store.id] = {}
   sandbox = document.createElement('iframe')
   sandbox.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
   sandbox.setAttribute('id', 'sandbox' + store.id)
@@ -137,7 +137,7 @@ async function updateRender() {
     console.log(`[Cubev ${store.id}] successfully compiled ${modules.length} modules.`)
     // reset modules
     proxy.eval([
-      `window.__modules__ = {};window.__css__ = '';window.cubeId = ${store.id};`,
+      `window.__modules__ = {};window.__css__ = '';window.cubeId = '${store.id}';`,
       ...modules,
       `import { createApp as _createApp } from "vue"
       if (window.__app__) {

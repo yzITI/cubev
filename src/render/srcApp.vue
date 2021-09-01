@@ -6,16 +6,16 @@ const C = parent.cubev
 const context = ref(C.context)
 let unwatch = null
 function startWatch () {
-  unwatch = watch(() => context.value, v => {
+  unwatch = watch(context, v => {
     C.context = _.cloneDeep(v)
-    for (const k in C) {
-      if (k == 'context' || k == id || !C[k].callback) continue
-      C[k].callback()
+    for (const k in C.cubes) {
+      if (k == id || !C.cubes[k].callback) continue
+      C.cubes[k].callback()
     }
   }, { deep: true })
 }
 startWatch()
-C[id].callback = () => {
+C.cubes[id].callback = () => {
   if (unwatch) unwatch()
   // must do this brutal copy. Try to improve in the future
   for (const k in context.value) delete context.value[k]

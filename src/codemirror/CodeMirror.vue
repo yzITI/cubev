@@ -47,16 +47,13 @@ onMounted(() => {
     editor.setOption('mode', props.mode)
   })
 
-  window.addEventListener(
-    'resize',
+  window.addEventListener('resize',
     debounce(() => {
       editor.refresh()
     })
   )
 
-  setTimeout(() => {
-    editor.refresh()
-  }, 50)
+  setTimeout(() => { editor.refresh() }, 50)
 })
 </script>
 

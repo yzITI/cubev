@@ -20,17 +20,16 @@ import welcomeCode from './welcomeCode.vue?raw'
 // addons
 import CodeMirror from './codemirror/CodeMirror.vue'
 
-const { cubeId, addons, plugins, hideBar } = defineProps({
-  'cubeId': { default: 'id', required: true },
-  hideBar: { default: false },
-  addons: { default: ['Raw'] },
-  plugins: { default: [] }
+const { state, addons, plugins, hideBar } = defineProps({
+  state: { default: {}, required: true },
+  hideBar: { default: false }, // hide functional bar
+  addons: { default: ['Raw'] }, // enabled addons(name)
+  plugins: { default: [] } // enabled plugins(module)
 })
 
 const ready = ref(false)
-const state = {}
-const store = reactive({ // inside
-  id: cubeId,
+const store = reactive({ // internal state
+  id: '#' + (++window.cubev.count),
   files: {},
   compiled: {},
   tab: '',
@@ -47,20 +46,15 @@ const showRender = computed(() => {
   }
 })
 
-watch(showRender, v => {
+watch(showRender, v => { // re-render
   if (!v) return
   store.files['Cube.vue'] = state.code
   compileFile('Cube.vue', store)
 })
 
-async function addFile (filename, code) {
-  store.files[filename] = code
-  return await compileFile(filename, store)
-}
-
 async function init () {
+  if (!state.id) state.id = store.id
   if (!state.code) state.code = welcomeCode
-  if (!state.data) state.data = {}
   store.files['App.vue'] = srcApp
   store.files['Cube.vue'] = state.code
   await compileFile('App.vue', store)
