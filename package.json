@@ -1,6 +1,6 @@
 {
   "name": "cubev",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -29,13 +29,14 @@
     "@vue/compiler-sfc": "^3.0.5",
     "vite": "^2.5.1"
   },
-  "description": "## Installation",
+  "description": "a Cube with Vue!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yzITI/cubev.git"
   },
   "keywords": [
-    "Vue"
+    "Vue",
+    "SFC"
   ],
   "author": "yzITI",
   "license": "Apache-2.0",
