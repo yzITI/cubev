@@ -9,7 +9,7 @@ async function transformTS(src) {
   }).code
 }
 
-export async function compileFile(filename, store) {
+export default async function (filename, store) {
   let code = store.files[filename]
   if (!store.compiled[filename]) store.compiled[filename] = { js: '', css: '' }
   if (!code.trim()) {

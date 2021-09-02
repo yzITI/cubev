@@ -9,7 +9,7 @@ import { Proxy } from './proxy.js'
 import compileModule from './compileModule.js'
 
 const container = ref()
-let sandbox, proxy, watchCompiled
+let sandbox, proxy, stopWatch
 const { store } = defineProps(['store'])
 
 // create sandbox on mount
@@ -19,6 +19,7 @@ onMounted(createSandbox)
 watch(() => store.head, createSandbox)
 
 onUnmounted(() => {
+  if (stopWatch) stopWatch()
   proxy.destroy()
 })
 
@@ -27,7 +28,7 @@ function createSandbox() {
     proxy.destroy()
     container.value.removeChild(sandbox)
   }
-  window.cubev.cubes[store.id] = {}
+  if (stopWatch) stopWatch()
   sandbox = document.createElement('iframe')
   sandbox.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
   sandbox.setAttribute('id', 'sandbox' + store.id)
@@ -78,7 +79,7 @@ function createSandbox() {
     setTimeout(() => {
       proxy.handle_links()
       updateRender()
-      watch(store.compiled, updateRender)
+      stopWatch = watch(store.compiled, updateRender)
     }, 30)
   })
 }

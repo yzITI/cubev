@@ -2,21 +2,24 @@
   <div class="cubev">
     <bar v-if="!hideBar" :store="store" :state="state"></bar>
     <render v-if="ready" v-show="showRender" :store="store"></render>
-    <code-mirror v-if="state.tab == 'Raw' || state.tab == 'Head'" :state="state"></code-mirror>
+    <code-mirror :state="state"
+      v-if="state.tab == 'Raw' || state.tab == 'Head'"
+      :tip="state.tab == 'Head' && example.headTip"
+    ></code-mirror>
     <info :store="store"></info>
   </div>
 </template>
 
 <script setup>
 import { defineProps, ref, reactive, computed, watch } from 'vue'
-import { compileFile } from './render/compileFile.js'
+import compileFile from './render/compileFile.js'
 
 import Render from './render/Render.vue'
 import Bar from './components/Bar.vue'
 import Info from './components/Info.vue'
 
 import srcApp from './render/srcApp.vue?raw'
-import defaultCode from './defaultCode.vue?raw'
+import * as example from './example.js'
 // addons
 import CodeMirror from './codemirror/CodeMirror.vue'
 
@@ -47,10 +50,9 @@ const showRender = computed(() => {
   }
 })
 
-watch(showRender, v => { // re-render
-  if (!v) return
-  store.head = state.head
-  compileFile('Cube.vue', store)
+watch(() => state.tab, (v, old) => {
+  if (old == 'Head') store.head = state.head
+  if (old == 'Raw') compileFile('Cube.vue', store)
 })
 
 // sync code
@@ -58,7 +60,7 @@ watch(() => state.code, v => { store.files['Cube.vue'] = v })
 
 async function init () {
   state.id = store.id
-  if (!state.code) state.code = defaultCode
+  if (!state.code) state.code = example.code
   if (!state.head) state.head = ''
   if (!state.tab) state.tab = 'Cube'
   store.head = state.head

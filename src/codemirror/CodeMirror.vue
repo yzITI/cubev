@@ -1,4 +1,5 @@
 <template>
+  <pre v-if="props.tip">{{ props.tip }}</pre>
   <div class="editor" ref="el"></div>
 </template>
 
@@ -11,6 +12,7 @@ const el = ref()
 
 const props = defineProps({
   state: { required: true },
+  tip: { default: '' },
   mode: { default: 'htmlmixed' },
   readonly: { default: false }
 })
@@ -61,6 +63,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+pre {
+  background-color: #eee;
+  padding: 16px;
+  margin: 0;
+  white-space: pre-wrap;
+}
 .editor {
   position: relative;
   width: 100%;
