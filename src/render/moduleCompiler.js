@@ -37,7 +37,7 @@ function processFile(filename, compiled, seen = new Set()) {
 
   function defineImport(node, source) {
     const fn = source.replace(/^\.\/+/, '')
-    if (!(fn in compiled)) {
+    if (!(fn in compiled) && fn !== 'vue') {
       throw new Error(`File "${fn}" does not exist.`)
     }
     if (importedFiles.has(fn)) return importToIdMap.get(fn)
@@ -65,7 +65,7 @@ function processFile(filename, compiled, seen = new Set()) {
     // import * as ok from 'foo' --> ok -> __import_foo__
     if (node.type === 'ImportDeclaration') {
       const source = node.source.value
-      if (source.startsWith('./')) {
+      if (source.startsWith('./') || source == 'vue') {
         const importId = defineImport(node, node.source.value)
         for (const spec of node.specifiers) {
           if (spec.type === 'ImportSpecifier') {
@@ -204,9 +204,12 @@ function processFile(filename, compiled, seen = new Set()) {
   const processed = [s.toString()]
   if (importedFiles.size) {
     for (const imported of importedFiles) {
+      if (imported == 'vue') continue
       processed.push(...processFile(imported, compiled, seen))
     }
   }
+
+  // console.log(idToImportMap, declaredConst, importedFiles, importToIdMap)
 
   // return a list of files to further process
   return processed
