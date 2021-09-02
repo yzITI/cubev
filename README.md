@@ -1,5 +1,7 @@
 # ![](https://raw.githubusercontent.com/yzITI/cubev/main/src/assets/logo.svg) Cubev
 
+a Cube with Vue! A reactive, open-interface, dynamic, in-browser Vue 3 SFC renderer and editor inspired by <sfc.vuejs.org>.
+
 ## Installation
 
 ```

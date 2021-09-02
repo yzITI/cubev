@@ -16,7 +16,7 @@ import Bar from './components/Bar.vue'
 import Info from './components/Info.vue'
 
 import srcApp from './render/srcApp.vue?raw'
-import welcomeCode from './welcomeCode.vue?raw'
+import defaultCode from './defaultCode.vue?raw'
 // addons
 import CodeMirror from './codemirror/CodeMirror.vue'
 
@@ -54,7 +54,7 @@ watch(showRender, v => { // re-render
 
 async function init () {
   if (!state.id) state.id = store.id
-  if (!state.code) state.code = welcomeCode
+  if (!state.code) state.code = defaultCode
   store.files['App.vue'] = srcApp
   store.files['Cube.vue'] = state.code
   await compileFile('App.vue', store)

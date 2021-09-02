@@ -3,22 +3,14 @@
 </template>
 
 <script setup>
-const vueRuntimeUrl = 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.runtime.esm-browser.prod.js'
-import {
-  ref,
-  onMounted,
-  onUnmounted,
-  watch,
-  defineProps
-} from 'vue'
+import { ref, onMounted, onUnmounted, watch, defineProps } from 'vue'
 import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './proxy.js'
 import compileModule from './moduleCompiler.js'
 
-const { store } = defineProps(['store'])
 const container = ref()
-
 let sandbox, proxy, watchCompiled
+const { store } = defineProps(['store'])
 
 // create sandbox on mount
 onMounted(createSandbox)
@@ -39,12 +31,6 @@ watch(
       if (!map.imports) {
         store.errors = [`import-map.json is missing "imports" field.`]
         return
-      }
-      if (map.imports.vue) {
-        store.errors = [
-          'Select Vue versions using the top-right dropdown.\n' +
-            'Specifying it in the import map has no effect.'
-        ]
       }
       createSandbox()
     } catch (e) {
@@ -76,7 +62,6 @@ function createSandbox() {
   }
 
   if (!importMap.imports) importMap.imports = {}
-  importMap.imports.vue = vueRuntimeUrl
   const sandboxSrc = srcdoc.replace('<!--IMPORT_MAP-->', JSON.stringify(importMap))
   sandbox.srcdoc = sandboxSrc
   container.value.appendChild(sandbox)
@@ -137,9 +122,9 @@ async function updateRender() {
     console.log(`[Cubev ${store.id}] successfully compiled ${modules.length} modules.`)
     // reset modules
     proxy.eval([
-      `window.__modules__ = {};window.__css__ = '';window.cubeId = '${store.id}';`,
+      `window.__modules__ = { vue: parent.cubev.Vue };window.__css__ = '';window.cubeId = '${store.id}';`,
       ...modules,
-      `import { createApp as _createApp } from "vue"
+      `const { createApp: _createApp } = window.__modules__.vue
       if (window.__app__) {
         window.__app__.unmount()
         document.getElementById('srcapp').innerHTML = ''
@@ -147,7 +132,7 @@ async function updateRender() {
       document.getElementById('__sfc-styles').innerHTML = window.__css__
       const app = window.__app__ = _createApp(__modules__["App.vue"].default)
       app.config.errorHandler = e => console.error(e)
-      app.mount('#srcapp')`.trim()
+      app.mount(document.getElementById('srcapp'))`.trim()
     ])
   } catch (e) {
     store.runtimeError = e.message
