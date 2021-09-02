@@ -1,4 +1,5 @@
 <template>
+  <pre v-if="props.tip">{{ props.tip }}</pre>
   <div class="editor" ref="el"></div>
 </template>
 
@@ -10,14 +11,14 @@ import CodeMirror from './codemirror.js'
 const el = ref()
 
 const props = defineProps({
+  state: { required: true },
+  tip: { default: '' },
   mode: { default: 'htmlmixed' },
-  modelValue: { default: '' },
   readonly: { default: false }
 })
+const state = props.state
 
-let code = 'CODE'
-const emit = defineEmits(['update:modelValue'])
-
+let code = ''
 onMounted(() => {
   const addonOptions = {
     autoCloseBrackets: true,
@@ -39,14 +40,15 @@ onMounted(() => {
 
   editor.on('change', () => {
     code = editor.getValue()
-    emit('update:modelValue', code)
+    if (state.tab == 'Raw') state.code = code
+    if (state.tab == 'Head') state.head = code
   })
 
   watchEffect(() => {
-    if (props.modelValue != code) {
-      code = props.modelValue
-      editor.setValue(code)
-    }
+    let target = ''
+    if (state.tab == 'Raw') target = state.code
+    if (state.tab == 'Head') target = state.head
+    if (target != code) editor.setValue(target)
   })
   watchEffect(() => {
     editor.setOption('mode', props.mode)
@@ -61,6 +63,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+pre {
+  background-color: #eee;
+  padding: 16px;
+  margin: 0;
+  white-space: pre-wrap;
+}
 .editor {
   position: relative;
   width: 100%;

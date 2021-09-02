@@ -48,7 +48,7 @@
           await done
           document.head.removeChild(scriptEl)
         }
-        window.__next__ = () => console.error('EXTRA window.__next__')
+        window.__next__ = () => console.error('Extra window.__next__(). This may be caused by double-run of module evaluation.')
         send_ok()
       } catch (e) {
         send_error(e.message, e.stack);
@@ -210,10 +210,6 @@
 })()
 </script>
 
-<!-- ES Module Shims: Import maps polyfill for modules browsers without import maps support (all except Chrome 89+) -->
-<script async src="https://cdn.jsdelivr.net/npm/es-module-shims@0.12.4/dist/es-module-shims.min.js"></script>
-<script type="importmap"><!--IMPORT_MAP--></script>
-<script async src="https://cdn.jsdelivr.net/npm/lodash@latest/lodash.min.js"></script>
 <!--HEAD-->
 </head>
 <body>
