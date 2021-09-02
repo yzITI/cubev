@@ -1,16 +1,14 @@
 <template>
   <div class="bar">
-    <div @click="store.tab = 'Cube'">
+    <div @click="state.tab = 'Cube'">
       <img src="../assets/logo.svg" height="32"/>
     </div>
-    <div v-for="t in tabs" :class="{ chosen: t == store.tab }" @click="store.tab = t">{{ t }}</div>
+    <div v-for="t in store.tabs" :class="{ chosen: t == state.tab }" @click="state.tab = t" :key="t">{{ t }}</div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue'
-const { store } = defineProps(['store'])
-const tabs = computed(() => store.tabs)
+const { store, state } = defineProps(['store', 'state'])
 </script>
 
 <style scoped>

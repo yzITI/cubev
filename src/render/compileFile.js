@@ -1,7 +1,7 @@
-import { shouldTransformRef, transformRef } from './sfcCompiler.js'
-import * as SFCCompiler from './sfcCompiler.js'
+import { shouldTransformRef, transformRef } from './compilerLoader.js'
+import * as SFCCompiler from './compilerLoader.js'
 
-export const COMP_IDENTIFIER = `__sfc__`
+const COMP_IDENTIFIER = `__sfc__`
 
 async function transformTS(src) {
   return (await import('sucrase')).transform(src, {

@@ -6,7 +6,7 @@ import {
   extractIdentifiers,
   isInDestructureAssignment,
   isStaticProperty
-} from './sfcCompiler.js'
+} from './compilerLoader.js'
 import { babelParserDefaultPlugins } from '@vue/shared'
 
 const modulesKey = `__modules__`

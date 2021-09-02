@@ -6,7 +6,7 @@
 import { ref, onMounted, onUnmounted, watch, defineProps } from 'vue'
 import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './proxy.js'
-import compileModule from './moduleCompiler.js'
+import compileModule from './compileModule.js'
 
 const container = ref()
 let sandbox, proxy, watchCompiled
@@ -15,30 +15,8 @@ const { store } = defineProps(['store'])
 // create sandbox on mount
 onMounted(createSandbox)
 
-// reset sandbox when import map changes
-watch(
-  () => store.importMap,
-  (importMap, prev) => {
-    if (!importMap) {
-      if (prev) {
-        // import-map.json deleted
-        createSandbox()
-      }
-      return
-    }
-    try {
-      const map = JSON.parse(importMap)
-      if (!map.imports) {
-        store.errors = [`import-map.json is missing "imports" field.`]
-        return
-      }
-      createSandbox()
-    } catch (e) {
-      store.errors = [e]
-      return
-    }
-  }
-)
+// reset sandbox when head changes
+watch(() => store.head, createSandbox)
 
 onUnmounted(() => {
   proxy.destroy()
@@ -53,16 +31,8 @@ function createSandbox() {
   sandbox = document.createElement('iframe')
   sandbox.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
   sandbox.setAttribute('id', 'sandbox' + store.id)
-  let importMap
-  try {
-    importMap = JSON.parse(store.importMap || `{}`)
-  } catch (e) {
-    store.errors = [`Syntax error in import-map.json: ${e.message}`]
-    return
-  }
 
-  if (!importMap.imports) importMap.imports = {}
-  const sandboxSrc = srcdoc.replace('<!--IMPORT_MAP-->', JSON.stringify(importMap))
+  const sandboxSrc = srcdoc.replace('<!--HEAD-->', store.head)
   sandbox.srcdoc = sandboxSrc
   container.value.appendChild(sandbox)
 
@@ -73,7 +43,7 @@ function createSandbox() {
     on_error: (event) => {
       const msg = event.value instanceof Error ? event.value.message : event.value
       if (msg.includes('Failed to resolve module specifier') || msg.includes('Error resolving module specifier')) {
-        store.runtimeError = msg.replace(/\. Relative references must.*$/, '') + `.\nTip: add an "import-map.json" file to specify import paths for dependencies.`
+        store.runtimeError = msg.replace(/\. Relative references must.*$/, '') + `.\nTip: add an importmap to head (Note that only Chrome 89+ support that).`
       } else store.runtimeError = event.value
     },
     on_unhandled_rejection: (event) => {
