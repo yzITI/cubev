@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
-      name: 'Cubev',
+      formats: ['es'],
       fileName: (format) => `cubev.${format}.js`
     },
     rollupOptions: {

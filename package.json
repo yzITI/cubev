@@ -1,6 +1,6 @@
 {
   "name": "cubev",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,14 +9,10 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/cubev.umd.js",
   "module": "./dist/cubev.es.js",
   "style": "./dist/style.css",
   "exports": {
-    ".": {
-      "import": "./dist/cubev.es.js",
-      "require": "./dist/cubev.umd.js"
-    },
+    ".": "./dist/cubev.es.js",
     "./style": "./dist/style.css"
   },
   "dependencies": {
