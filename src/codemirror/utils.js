@@ -2,9 +2,7 @@ export function debounce(fn, n = 100) {
   let handle
   return (...args) => {
     if (handle) clearTimeout(handle)
-    handle = setTimeout(() => {
-      fn(...args)
-    }, n)
+    handle = setTimeout(() => { fn(...args) }, n)
   }
 }
 

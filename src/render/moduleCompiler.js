@@ -19,15 +19,11 @@ export default function (compiled) {
 }
 
 function processFile(filename, compiled, seen = new Set()) {
-  if (seen.has(filename)) {
-    return []
-  }
+  if (seen.has(filename)) return []
   seen.add(filename)
 
   const { js, css } = compiled[filename]
-
   const s = new MagicString(js)
-
   const ast = babelParse(js, {
     sourceFilename: filename,
     sourceType: 'module',
@@ -44,9 +40,7 @@ function processFile(filename, compiled, seen = new Set()) {
     if (!(fn in compiled)) {
       throw new Error(`File "${fn}" does not exist.`)
     }
-    if (importedFiles.has(fn)) {
-      return importToIdMap.get(fn)
-    }
+    if (importedFiles.has(fn)) return importToIdMap.get(fn)
     importedFiles.add(fn)
     const id = `__import_${importedFiles.size}__`
     importToIdMap.set(fn, id)
@@ -57,17 +51,12 @@ function processFile(filename, compiled, seen = new Set()) {
     return id
   }
 
-
   function defineExport(name, local = name) {
     s.append(`\n${exportKey}(${moduleKey}, "${name}", () => ${local})`)
   }
 
   // 0. instantiate module
-  s.prepend(
-    `const ${moduleKey} = __modules__[${JSON.stringify(
-      filename
-    )}] = { [Symbol.toStringTag]: "Module" }\n\n`
-  )
+  s.prepend(`const ${moduleKey} = __modules__[${JSON.stringify(filename)}] = { [Symbol.toStringTag]: "Module" }\n\n`)
 
   // 1. check all import statements and record id -> importName map
   for (const node of ast) {
@@ -169,9 +158,7 @@ function processFile(filename, compiled, seen = new Set()) {
     if (node.type === 'ImportDeclaration') continue
     walkIdentifiers(node, (id, parent, parentStack) => {
       const binding = idToImportMap.get(id.name)
-      if (!binding) {
-        return
-      }
+      if (!binding) return
       if (isStaticProperty(parent) && parent.shorthand) {
         // let binding used in a property shorthand
         // { foo } -> { foo: __import_x__.foo }
@@ -179,9 +166,7 @@ function processFile(filename, compiled, seen = new Set()) {
         if (
           !parent.inPattern ||
           isInDestructureAssignment(parent, parentStack)
-        ) {
-          s.appendLeft(id.end, `: ${binding}`)
-        }
+        ) s.appendLeft(id.end, `: ${binding}`)
       } else if (
         parent.type === 'ClassDeclaration' &&
         id === parent.superClass
@@ -192,9 +177,7 @@ function processFile(filename, compiled, seen = new Set()) {
           const topNode = parentStack[1]
           s.prependRight(topNode.start, `const ${id.name} = ${binding};\n`)
         }
-      } else {
-        s.overwrite(id.start, id.end, binding)
-      }
+      } else s.overwrite(id.start, id.end, binding)
     })
   }
 
@@ -216,9 +199,7 @@ function processFile(filename, compiled, seen = new Set()) {
   })
 
   // append CSS injection code
-  if (css) {
-    s.append(`\nwindow.__css__ += ${JSON.stringify(css)}`)
-  }
+  if (css) s.append(`\nwindow.__css__ += ${JSON.stringify(css)}`)
 
   const processed = [s.toString()]
   if (importedFiles.size) {

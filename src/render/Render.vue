@@ -4,21 +4,14 @@
 
 <script setup>
 const vueRuntimeUrl = 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.runtime.esm-browser.prod.js'
-import {
-  ref,
-  onMounted,
-  onUnmounted,
-  watch,
-  defineProps
-} from 'vue'
+import { ref, onMounted, onUnmounted, watch, defineProps } from 'vue'
 import srcdoc from './srcdoc.html?raw'
 import { Proxy } from './proxy.js'
 import compileModule from './moduleCompiler.js'
 
-const { store } = defineProps(['store'])
 const container = ref()
-
 let sandbox, proxy, watchCompiled
+const { store } = defineProps(['store'])
 
 // create sandbox on mount
 onMounted(createSandbox)
@@ -40,12 +33,7 @@ watch(
         store.errors = [`import-map.json is missing "imports" field.`]
         return
       }
-      if (map.imports.vue) {
-        store.errors = [
-          'Select Vue versions using the top-right dropdown.\n' +
-            'Specifying it in the import map has no effect.'
-        ]
-      }
+      if (map.imports.vue) store.errors = ['Select Vue versions using the top-right dropdown.\nSpecifying it in the import map has no effect.']
       createSandbox()
     } catch (e) {
       store.errors = [e]

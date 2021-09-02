@@ -53,9 +53,7 @@ onMounted(() => {
   })
 
   window.addEventListener('resize',
-    debounce(() => {
-      editor.refresh()
-    })
+    debounce(() => { editor.refresh() })
   )
 
   setTimeout(() => { editor.refresh() }, 50)

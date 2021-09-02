@@ -18,24 +18,15 @@ export async function compileFile(filename, store) {
   }
 
   if (!filename.endsWith('.vue')) {
-    if (shouldTransformRef(code)) {
-      code = transformRef(code, { filename }).code
-    }
-
-    if (filename.endsWith('.ts')) {
-      code = await transformTS(code)
-    }
-
+    if (shouldTransformRef(code)) code = transformRef(code, { filename }).code
+    if (filename.endsWith('.ts')) code = await transformTS(code)
     store.compiled[filename].js = code
     store.errors = []
     return
   }
 
   const id = await hashId(filename)
-  const { errors, descriptor } = SFCCompiler.parse(code, {
-    filename,
-    sourceMap: true
-  })
+  const { errors, descriptor } = SFCCompiler.parse(code, { filename, sourceMap: true })
   if (errors.length) {
     store.errors = errors
     return
@@ -45,10 +36,7 @@ export async function compileFile(filename, store) {
     descriptor.styles.some(s => s.lang) ||
     (descriptor.template && descriptor.template.lang)
   ) {
-    store.errors = [
-      `lang="x" pre-processors for <template> or <style> are currently not ` +
-        `supported.`
-    ]
+    store.errors = [`lang="x" pre-processors for <template> or <style> are currently not supported.`]
     return
   }
 
@@ -64,33 +52,22 @@ export async function compileFile(filename, store) {
   let clientCode = ''
 
   const clientScriptResult = await doCompileScript(descriptor, id, store)
-  if (!clientScriptResult) {
-    return
-  }
+  if (!clientScriptResult) return
   const [clientScript, bindings] = clientScriptResult
   clientCode += clientScript
 
   // template
   // only need dedicated compilation if not using <script setup>
   if (descriptor.template && !descriptor.scriptSetup) {
-    const clientTemplateResult = doCompileTemplate(
-      descriptor,
-      id,
-      bindings,
-      store
-    )
-    if (!clientTemplateResult) {
-      return
-    }
+    const clientTemplateResult = doCompileTemplate(descriptor, id, bindings, store)
+    if (!clientTemplateResult) return
     clientCode += clientTemplateResult
   }
 
-  if (hasScoped) {
-    clientCode += `\n${COMP_IDENTIFIER}.__scopeId = ${JSON.stringify(`data-v-${id}`)}`
-  }
+  if (hasScoped) clientCode += `\n${COMP_IDENTIFIER}.__scopeId = ${JSON.stringify(`data-v-${id}`)}`
 
   if (clientCode) {
-    clientCode += `\n${COMP_IDENTIFIER}.__file = ${JSON.stringify(filename)}` + `\nexport default ${COMP_IDENTIFIER}`
+    clientCode += `\n${COMP_IDENTIFIER}.__file = ${JSON.stringify(filename)}\nexport default ${COMP_IDENTIFIER}`
     store.compiled[filename].js = clientCode.trimStart()
   }
 
@@ -104,28 +81,19 @@ export async function compileFile(filename, store) {
 
     const styleResult = await SFCCompiler.compileStyleAsync({
       source: style.content,
-      filename,
-      id,
+      filename, id,
       scoped: style.scoped,
       modules: !!style.module
     })
     if (styleResult.errors.length) {
       // postcss uses pathToFileURL which isn't polyfilled in the browser
       // ignore these errors for now
-      if (!styleResult.errors[0].message.includes('pathToFileURL')) {
-        store.errors = styleResult.errors
-      }
+      if (!styleResult.errors[0].message.includes('pathToFileURL')) store.errors = styleResult.errors
       // proceed even if css compile errors
-    } else {
-      css += styleResult.code + '\n'
-    }
+    } else css += styleResult.code + '\n'
   }
-  if (css) {
-    store.compiled[filename].css = css.trim()
-  } else {
-    store.compiled[filename].css = '/* No <style> tags present */'
-  }
-
+  if (css) store.compiled[filename].css = css.trim()
+  else store.compiled[filename].css = '/* No <style> tags present */'
   // clear errors
   store.errors = []
 }
@@ -140,28 +108,18 @@ async function doCompileScript(descriptor, id, store) {
       })
       let code = ''
       if (compiledScript.bindings) {
-        code += `\n/* Analyzed bindings: ${JSON.stringify(
-          compiledScript.bindings,
-          null,
-          2
-        )} */`
+        code += `\n/* Analyzed bindings: ${JSON.stringify(compiledScript.bindings, null, 2)} */`
       }
-      code +=
-        `\n` +
-        SFCCompiler.rewriteDefault(compiledScript.content, COMP_IDENTIFIER)
+      code += '\n' + SFCCompiler.rewriteDefault(compiledScript.content, COMP_IDENTIFIER)
 
-      if ((descriptor.script || descriptor.scriptSetup).lang === 'ts') {
-        code = await transformTS(code)
-      }
+      if ((descriptor.script || descriptor.scriptSetup).lang === 'ts') code = await transformTS(code)
 
       return [code, compiledScript.bindings]
     } catch (e) {
       store.errors = [e.stack.split('\n').slice(0, 12).join('\n')]
       return
     }
-  } else {
-    return [`\nconst ${COMP_IDENTIFIER} = {}`, undefined]
-  }
+  } else return [`\nconst ${COMP_IDENTIFIER} = {}`, undefined]
 }
 
 function doCompileTemplate(descriptor, id, bindingMetadata, store) {
@@ -172,9 +130,7 @@ function doCompileTemplate(descriptor, id, bindingMetadata, store) {
     scoped: descriptor.styles.some(s => s.scoped),
     slotted: descriptor.slotted,
     isProd: false,
-    compilerOptions: {
-      bindingMetadata
-    }
+    compilerOptions: { bindingMetadata }
   })
   if (templateResult.errors.length) {
     store.errors = templateResult.errors
@@ -182,13 +138,7 @@ function doCompileTemplate(descriptor, id, bindingMetadata, store) {
   }
 
   const fnName = `render`
-
-  return (
-    `\n${templateResult.code.replace(
-      /\nexport (function|const) (render)/,
-      `$1 ${fnName}`
-    )}` + `\n${COMP_IDENTIFIER}.${fnName} = ${fnName}`
-  )
+  return `\n${templateResult.code.replace(/\nexport (function|const) (render)/, `$1 ${fnName}`)}\n${COMP_IDENTIFIER}.${fnName} = ${fnName}`
 }
 
 async function hashId(filename) {
