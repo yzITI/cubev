@@ -8,6 +8,11 @@ a Cube with Vue! A reactive, open-interface, dynamic, in-browser Vue 3 SFC rende
 npm i cubev
 ```
 
+In `main.js`, add the following code
+```js
+import 'cubev/style'
+```
+
 In `index.html`, add the following element to `<head>`
 ```html
 <script>window.process = { env: {} }</script>

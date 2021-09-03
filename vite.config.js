@@ -12,7 +12,7 @@ export default defineConfig({
       fileName: (format) => `cubev.${format}.js`
     },
     rollupOptions: {
-      external: ['vue', 'sucrase', 'codemirror']
+      external: ['vue', 'sucrase']
     }
   }
 })
