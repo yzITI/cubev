@@ -64,8 +64,8 @@ async function init () {
   if (!state.head) state.head = ''
   if (!state.tab) state.tab = 'Cube'
   store.head = state.head
-  await compileFile('App.vue', store)
   await compileFile('Cube.vue', store)
+  await compileFile('App.vue', store)
   ready.value = true
 }
 init()

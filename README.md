@@ -8,9 +8,9 @@ a Cube with Vue! A reactive, open-interface, dynamic, in-browser Vue 3 SFC rende
 npm i cubev
 ```
 
-In `main.js`
-```js
-import 'cubev/style'
+In `index.html`, add the following element to `<head>`
+```html
+<script>window.process = { env: {} }</script>
 ```
 
 ## Get Started
@@ -21,6 +21,7 @@ import 'cubev/style'
 </template>
 
 <script setup>
+import { reactive } from 'vue'
 import Cubev from 'cubev'
 
 const exampleCode = `
@@ -29,10 +30,10 @@ const exampleCode = `
 </template>
 <script setup>
 let msg = $ref('Hello Cubev!')
-</script>
+<\/script>
 `
 
-const state = $ref({
+const state = reactive({
   code: exampleCode, // optional
   head: '' // optional, style links etc.
 })

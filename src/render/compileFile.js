@@ -12,7 +12,7 @@ async function transformTS(src) {
 export default async function (filename, store) {
   let code = store.files[filename]
   if (!store.compiled[filename]) store.compiled[filename] = { js: '', css: '' }
-  if (!code.trim()) {
+  if (!code || !code.trim()) {
     store.errors = []
     return
   }

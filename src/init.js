@@ -4,5 +4,4 @@ if (!window.cubev) window.cubev = {
   count: 0,
   context: Vue.reactive({})
 }
-window.process = { env: {} }
 export default {}
