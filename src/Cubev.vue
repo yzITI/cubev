@@ -55,15 +55,15 @@ watch(() => state.tab, (v, old) => {
   if (old == 'Raw') compileFile('Cube.vue', store)
 })
 
-// sync code
+state.id = store.id
+if (!state.code) state.code = example.code
+if (!state.head) state.head = ''
+if (!state.tab) state.tab = 'Cube'
+store.head = state.head
+store.files['Cube.vue'] = state.code
 watch(() => state.code, v => { store.files['Cube.vue'] = v })
 
 async function init () {
-  state.id = store.id
-  if (!state.code) state.code = example.code
-  if (!state.head) state.head = ''
-  if (!state.tab) state.tab = 'Cube'
-  store.head = state.head
   await compileFile('Cube.vue', store)
   await compileFile('App.vue', store)
   ready.value = true

@@ -85,7 +85,6 @@ function createSandbox() {
 }
 
 async function updateRender() {
-  if (import.meta.env.PROD) console.clear()
   store.runtimeError = null
   store.runtimeWarning = null
   try {
