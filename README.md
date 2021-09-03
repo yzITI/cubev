@@ -33,7 +33,10 @@ let msg = $ref('Hello Cubev!')
 `
 
 const state = $ref({
-  code: exampleCode
+  code: exampleCode, // optional
+  head: '' // optional, style links etc.
 })
 </script>
 ```
+
+If no code is passed in, Cubev will use an example code. Play with it!

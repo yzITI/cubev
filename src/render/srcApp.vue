@@ -1,5 +1,4 @@
 <script setup>
-import { watch, ref } from 'vue'
 import Cube from './Cube.vue'
 const id = window.cubeId
 const C = parent.cubev
