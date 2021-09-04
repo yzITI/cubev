@@ -1,5 +1,7 @@
 <template>
-  <slot></slot>
+  <div style="background: #eee;">
+    <slot></slot>
+  </div>
   <div class="editor" ref="el"></div>
 </template>
 
@@ -39,14 +41,16 @@ onMounted(() => {
 
   editor.on('change', () => {
     code = editor.getValue()
-    if (state.tab == 'Raw') state.code = code
+    if (state.tab == 'Code') state.code = code
     if (state.tab == 'Head') state.head = code
+    if (state.tab == 'Markdown') state.markdown = code
   })
 
   watchEffect(() => {
     let target = ''
-    if (state.tab == 'Raw') target = state.code
+    if (state.tab == 'Code') target = state.code
     if (state.tab == 'Head') target = state.head
+    if (state.tab == 'Markdown') target = state.markdown || ''
     if (target != code) editor.setValue(target)
   })
   watchEffect(() => {
