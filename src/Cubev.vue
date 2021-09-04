@@ -2,16 +2,15 @@
   <div class="cubev">
     <bar v-if="!hideBar" :store="store" :state="state"></bar>
     <render v-if="ready" v-show="showRender" :store="store"></render>
-    <code-mirror :state="state"
-      v-if="state.tab == 'Raw' || state.tab == 'Head'"
-      :tip="state.tab == 'Head' && example.headTip"
-    ></code-mirror>
+    <code-mirror :state="state" v-if="state.tab == 'Raw' || state.tab == 'Head'">
+      <pre v-if="state.tab == 'Head'">{{ example.headTip }}</pre>
+    </code-mirror>
     <info :store="store"></info>
   </div>
 </template>
 
 <script setup>
-import { defineProps, ref, reactive, computed, watch } from 'vue'
+import { defineProps, ref, reactive, computed, watchEffect } from 'vue'
 import compileFile from './render/compileFile.js'
 
 import Render from './render/Render.vue'
@@ -50,23 +49,24 @@ const showRender = computed(() => {
   }
 })
 
-watch(() => state.tab, (v, old) => {
-  if (old == 'Head') store.head = state.head
-  if (old == 'Raw') compileFile('Cube.vue', store)
-})
-
 state.id = store.id
-if (!state.code) state.code = example.code
-if (!state.head) state.head = ''
 if (!state.tab) state.tab = 'Cube'
-store.head = state.head
-store.files['Cube.vue'] = state.code
-watch(() => state.code, v => { store.files['Cube.vue'] = v })
+if (!state.head) state.head = ''
+if (!state.code) {
+  state.code = example.code
+  state.head = example.head
+}
 
 async function init () {
+  store.files['Cube.vue'] = state.code
   await compileFile('Cube.vue', store)
   await compileFile('App.vue', store)
   ready.value = true
+  watchEffect(() => {
+    if (state.tab != 'Head') store.head = state.head
+    store.files['Cube.vue'] = state.code
+    if (showRender.value) compileFile('Cube.vue', store)
+  })
 }
 init()
 </script>
@@ -76,5 +76,11 @@ div.cubev {
   min-width: 320px;
   max-width: 100vw;
   min-height: 100px;
+}
+pre {
+  background-color: #eee;
+  padding: 16px;
+  margin: 0;
+  white-space: pre-wrap;
 }
 </style>

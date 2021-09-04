@@ -5,11 +5,13 @@ When using importmap, scripts must be async.
 `
 
 export const code = `<template>
-  <div>
+  <div class="content">
+    <p>Here is an example with Bulma (in Head).</p>
     <h1>{{ msg }}</h1>
-    <input v-model="msg">
+    <input class="input" v-model="msg">
+    <hr>
     <p>The following input is reactive across multiple Cubev components</p>
-    <input placeholder="reactive message" v-model="context.msg">
+    <input class="input" placeholder="reactive message" v-model="context.msg">
   </div>
 </template>
 
@@ -23,3 +25,6 @@ div {
   padding: 0 16px;
 }
 </style>`
+
+export const head = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
+<style>html { overflow-y: auto; }</style>`
