@@ -33,7 +33,7 @@ function createSandbox() {
   sandbox.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
   sandbox.setAttribute('id', 'sandbox' + store.id)
 
-  const sandboxSrc = srcdoc.replace('<!--HEAD-->', store.head)
+  const sandboxSrc = srcdoc.replace('<!--HEAD-->', store.head.replace(/\$/g, '$$$$'))
   sandbox.srcdoc = sandboxSrc
   container.value.appendChild(sandbox)
 

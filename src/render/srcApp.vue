@@ -4,5 +4,5 @@ const id = window.cubeId
 const C = parent.cubev
 </script>
 <template>
-  <cube :context="C.context"></cube>
+  <cube :context="C.context" :state="C.cubes[id]"></cube>
 </template>
