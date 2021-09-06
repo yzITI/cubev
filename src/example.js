@@ -35,6 +35,8 @@ export const markdownHead = `<script src="https://cdn.jsdelivr.net/npm/markdown-
   }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/styles/default.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/highlight.min.js"></script>
 <style>
   * { outline: none; }
   mjx-container { max-width: 95%; overflow: auto; }
@@ -58,7 +60,10 @@ import { nextTick } from 'vue'
 const mmp = window.markdownit({ html: true })
 const { state } = defineProps(['state'])
 let md = $computed(() => {
-  nextTick(() => { window.MathJax.typeset() })
+  nextTick(() => {
+    window.MathJax.typeset()
+    hljs.highlightAll()
+  })
   return mmp.render(state.markdown || '')
 })
 </script>

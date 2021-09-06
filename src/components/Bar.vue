@@ -22,6 +22,7 @@ const { store, state } = defineProps(['store', 'state'])
 }
 
 .bar div {
+  user-select: none;
   text-align: center;
   font-size: 0.8rem;
   line-height: 32px;
