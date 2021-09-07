@@ -1,8 +1,7 @@
-import * as Vue from 'vue'
+import { reactive } from 'vue'
 if (!window.cubev) window.cubev = {
-  Vue: Vue,
   count: 0,
-  context: Vue.reactive({}),
+  context: reactive({}),
   cubes: {} // instances
 }
 export default {}
