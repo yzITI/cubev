@@ -1,9 +1,12 @@
 <template>
   <div class="bar">
-    <div @click="state.tab = 'Cube'">
+    <div @click="state.tab = ''" class="logo">
       <img src="../assets/logo.svg" height="32"/>
     </div>
-    <div v-for="t in store.tabs" :class="{ chosen: t == state.tab }" @click="state.tab = t" :key="t">{{ t }}</div>
+    <select v-if="store.tabs.length" v-model="state.tab">
+      <option v-for="t in store.tabs" :key="t">{{ t }}</option>
+    </select>
+    <div v-else></div>
   </div>
 </template>
 
@@ -14,30 +17,22 @@ const { store, state } = defineProps(['store', 'state'])
 <style scoped>
 .bar {
   display: flex;
-  height: 48px;
+  height: 32px;
   width: 100%;
-  overflow-x: auto;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid #ccc;
 }
-
-.bar div {
-  user-select: none;
-  text-align: center;
-  font-size: 0.8rem;
-  line-height: 32px;
+select {
+  margin: 0 24px;
+}
+div.logo {
+  padding: 0 12px;
   height: 32px;
-  padding: 0 10px;
-  font-family: Arial, Helvetica, sans-serif;
   transition: all 0.3s ease;
   cursor: pointer;
 }
-
-.bar div:hover {
-  background-color: rgb(79,192,141, 0.5);
-}
-
-.chosen {
-  background-color: rgb(79,192,141, 0.8);
+div.logo:hover {
+  background-color: rgb(79, 192, 141, 0.5);
 }
 </style>
