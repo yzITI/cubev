@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch, defineProps } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Sandbox } from './sandbox.js'
 import compileModule from './compileModule.js'
 

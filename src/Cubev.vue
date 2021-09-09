@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, reactive, watchEffect, onUnmounted, onMounted } from 'vue'
+import { ref, reactive, watchEffect, onUnmounted, onMounted } from 'vue'
 import compileFile from './render/compileFile.js'
 
 import Render from './render/Render.vue'

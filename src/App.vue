@@ -2,6 +2,7 @@
 import Cubev from './Cubev.vue'
 import * as Code from '../plugins/Code.js'
 import * as Head from '../plugins/Head.js'
+import * as Markdown from '../plugins/Markdown.js'
 import * as MarkdownRender from '../plugins/MarkdownRender.js'
 let state1 = $ref({})
 let state2 = $ref({
@@ -13,7 +14,7 @@ let state2 = $ref({
 <template>
   <cubev :state="state1" :plugins="[Code, Head]"></cubev>
   <hr style="margin: 50px;">
-  <cubev :state="state2" :plugins="[MarkdownRender]"></cubev>
+  <cubev :state="state2" :plugins="[MarkdownRender, Markdown]"></cubev>
 </template>
 
 <style>
