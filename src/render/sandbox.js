@@ -1,4 +1,4 @@
-import srcdoc from './srcdoc.html?raw'
+import srcdoc from './src/doc.html?raw'
 import * as Vue from 'vue'
 const { createApp } = Vue
 

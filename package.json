@@ -1,12 +1,13 @@
 {
   "name": "cubev",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build"
   },
   "files": [
-    "dist"
+    "dist",
+    "plugins"
   ],
   "module": "./dist/cubev.es.js",
   "style": "./dist/style.css",
@@ -15,7 +16,6 @@
     "./style": "./dist/style.css"
   },
   "dependencies": {
-    "codemirror": "^5.62.3",
     "sucrase": "^3.20.1",
     "vue": "^3.2.6"
   },

@@ -47,6 +47,7 @@ async function updateRender() {
     await sandbox.update(modules)
   } catch (e) {
     store.runtimeError = e.message
+    console.error(e)
   }
 }
 </script>
