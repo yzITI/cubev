@@ -6,7 +6,7 @@ import * as MarkdownRender from '../plugins/MarkdownRender.js'
 let state1 = $ref({})
 let state2 = $ref({
   code: MarkdownRender.code,
-  markdown: '## Hello! \n\n This cubev uses plugin `MarkdownRender` \n\n \`\`\`js\nconsole.log(\'Welcome to Cubev!\')\n\`\`\`'
+  markdown: '## Hello! \n\n This cubev uses plugin `MarkdownRender` \n\n ```js\nconsole.log(\'Welcome to Cubev!\')\n```\n**Associated Legendre Functions** are solutions to ($l, m$ are integers)\n$$(1-x^2)y\'\' - 2xy\' + [l(l+1) - \\frac{m^2}{1-x^2}]y = 0$$'
 })
 </script>
 
