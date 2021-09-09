@@ -6,7 +6,7 @@ import * as MarkdownRender from '../plugins/MarkdownRender.js'
 let state1 = $ref({})
 let state2 = $ref({
   code: MarkdownRender.code,
-  markdown: '## Hello! \n\n This cubev uses plugin `MarkdownRender` \n\n \`\`\`js\nconsole.log(\'Welcome to Cubev!\')\`\`\`'
+  markdown: '## Hello! \n\n This cubev uses plugin `MarkdownRender` \n\n \`\`\`js\nconsole.log(\'Welcome to Cubev!\')\n\`\`\`'
 })
 </script>
 
