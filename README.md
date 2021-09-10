@@ -2,6 +2,8 @@
 
 a Cube with Vue! A reactive, open-interface, dynamic, in-browser Vue 3 SFC renderer and editor inspired by <https://sfc.vuejs.org/>.
 
+![chrome-capture.gif](https://i.loli.net/2021/09/10/1Fs5d9ejQi4cYxC.gif)
+
 ## Installation
 
 ```

@@ -16,9 +16,3 @@ let state2 = $ref({
   <hr style="margin: 50px;">
   <cubev :state="state2" :plugins="[MarkdownRender, Markdown]"></cubev>
 </template>
-
-<style>
-body {
-  margin: 0;
-}
-</style>
