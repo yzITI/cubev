@@ -19,6 +19,6 @@ let state2 = $ref({
 
 <style>
 body {
-  background: #eee;
+  background: #ddd;
 }
 </style>
