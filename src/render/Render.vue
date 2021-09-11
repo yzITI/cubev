@@ -1,5 +1,5 @@
 <template>
-  <div class="render-container" ref="container"></div>
+  <div ref="container" style="width: 100%;"></div>
 </template>
 
 <script setup>
@@ -51,15 +51,3 @@ async function updateRender() {
   }
 }
 </script>
-
-<style>
-.render-container {
-  width: 100%;
-  background-color: white;
-}
-.render-container iframe {
-  border: none;
-  width: 100%;
-  background-color: #fff;
-}
-</style>

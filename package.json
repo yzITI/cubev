@@ -1,6 +1,6 @@
 {
   "name": "cubev",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "scripts": {
     "dev": "vite",
     "build": "vite build"
@@ -10,10 +10,8 @@
     "plugins"
   ],
   "module": "./dist/cubev.js",
-  "style": "./dist/style.css",
   "exports": {
     ".": "./dist/cubev.js",
-    "./style": "./dist/style.css",
     "./plugins/": "./plugins/"
   },
   "dependencies": {

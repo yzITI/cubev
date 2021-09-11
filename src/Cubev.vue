@@ -1,5 +1,5 @@
 <template>
-  <div class="cubev">
+  <div style="min-width: 320px; max-width: 100vw; background: white;">
     <bar v-if="!hideBar" :store="store" :state="state"></bar>
     <render v-if="ready" :store="store"></render>
     <info :store="store"></info>
@@ -83,11 +83,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped>
-div.cubev {
-  min-width: 320px;
-  max-width: 100vw;
-  min-height: 100px;
-}
-</style>

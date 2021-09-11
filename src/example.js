@@ -16,7 +16,7 @@ const { context } = defineProps(['context'])
 
 <style scoped>
 div {
-  padding: 0 16px;
+  padding: 16px;
 }
 </style>`
 

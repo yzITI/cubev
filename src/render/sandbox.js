@@ -7,11 +7,10 @@ export class Sandbox {
     this.id = store.id
     this.iframe = document.createElement('iframe')
     this.iframe.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
+    this.iframe.setAttribute('style', 'border: none; width: 100%; display:block;')
     this.iframe.srcdoc = srcdoc.replace('<!--HEAD-->', store.head.replace(/\$/g, '$$$$'))
     this.checkResize = setInterval(() => {
-      let h = this.iframe.contentWindow ? this.iframe.contentWindow.document.body.scrollHeight : 64
-      if (h < 64) h = 64
-      this.iframe.height = (h + 24) + 'px'
+      this.iframe.height = Number(this.iframe.contentWindow && this.iframe.contentWindow.document.body.scrollHeight) + 1
     }, 300)
   }
   destroy () {
