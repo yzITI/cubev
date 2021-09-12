@@ -11,7 +11,7 @@ export default defineConfig({
       fileName: (format) => `cubev.js`
     },
     rollupOptions: {
-      external: ['vue', 'sucrase']
+      external: ['vue', 'sucrase', 'crypto-js']
     }
   }
 })

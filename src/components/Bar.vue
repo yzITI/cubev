@@ -3,7 +3,7 @@
     <div @click="state.tab = ''" style="padding: 0 12px; cursor: pointer;">
       <img src="../assets/logo.svg" style="width: 32px;" />
     </div>
-    <select v-if="store.tabs.length" v-model="state.tab" style="margin: 0 8px; height: 32px; padding: 0 8px; border: none; outline: none; font-weight: bold;">
+    <select v-if="store.tabs.length" v-model="state.tab" style="margin: 0 8px; height: 32px; padding: 0 8px; border: none; outline: none; font-weight: bold; background: white;">
       <option v-for="t in store.tabs" :key="t">{{ t }}</option>
     </select>
     <div v-else></div>

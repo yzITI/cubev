@@ -1,6 +1,6 @@
 {
   "name": "cubev",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "scripts": {
     "dev": "vite",
     "build": "vite build"
@@ -15,6 +15,7 @@
     "./plugins/": "./plugins/"
   },
   "dependencies": {
+    "crypto-js": "^4.1.1",
     "sucrase": "^3.20.1",
     "vue": "^3.2.6"
   },

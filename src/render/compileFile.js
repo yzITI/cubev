@@ -1,5 +1,7 @@
 import { shouldTransformRef, transformRef } from './compilerLoader.js'
 import * as SFCCompiler from './compilerLoader.js'
+import sha256 from 'crypto-js/sha256'
+import Hex from 'crypto-js/enc-hex'
 
 const COMP_IDENTIFIER = `__sfc__`
 
@@ -25,7 +27,7 @@ export default async function (filename, store) {
     return
   }
 
-  const id = await hashId(filename)
+  const id = Hex.stringify(sha256(filename)).substr(0, 8)
   const { errors, descriptor } = SFCCompiler.parse(code, { filename, sourceMap: true })
   if (errors.length) {
     store.errors = errors
@@ -139,12 +141,4 @@ function doCompileTemplate(descriptor, id, bindingMetadata, store) {
 
   const fnName = `render`
   return `\n${templateResult.code.replace(/\nexport (function|const) (render)/, `$1 ${fnName}`)}\n${COMP_IDENTIFIER}.${fnName} = ${fnName}`
-}
-
-async function hashId(filename) {
-  const msgUint8 = new TextEncoder().encode(filename) // encode as (utf-8) Uint8Array
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8) // hash the message
-  const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('') // convert bytes to hex string
-  return hashHex.slice(0, 8)
 }
