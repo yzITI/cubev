@@ -1,6 +1,6 @@
 <template>
   <div style="min-width: 320px; max-width: 100vw; background: white;">
-    <bar v-if="!hideBar" :store="store" :state="state"></bar>
+    <bar :title="title" v-if="!hideBar" :store="store" :state="state"></bar>
     <render v-if="ready" :store="store"></render>
     <info :store="store"></info>
   </div>
@@ -17,8 +17,9 @@ import Info from './components/Info.vue'
 import srcApp from './render/src/App.vue?raw'
 import * as example from './example.js'
 
-const { state, plugins, hideBar } = defineProps({
+const { state, plugins, hideBar, title } = defineProps({
   state: { default: {}, required: true },
+  title: { default: '' }, // title on the bar
   hideBar: { default: false }, // hide functional bar
   plugins: { default: [] } // enabled plugins(module)
 })

@@ -14,7 +14,7 @@ let state2 = $ref({
 <template>
   <cubev :state="state1" :plugins="[Code, Head]"></cubev>
   <div style="height: 50px;" />
-  <cubev :state="state2" :plugins="[MarkdownRender, Markdown]"></cubev>
+  <cubev title="Markdown" :state="state2" :plugins="[MarkdownRender, Markdown]"></cubev>
   <div style="height: 500px;" />
 </template>
 
