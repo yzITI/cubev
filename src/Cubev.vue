@@ -76,11 +76,11 @@ onMounted(() => {
     await compileFile('Cube.vue', store)
     await compileFile('App.vue', store)
     ready.value = true
-  })
-  watchEffect(() => {
-    if (state.tab != 'Head') store.head = pluginsHead + state.head
-    store.files['Cube.vue'] = state.code
-    if (state.tab == '') compileFile('Cube.vue', store)
+    watchEffect(() => {
+      if (state.tab != 'Head') store.head = pluginsHead + state.head
+      store.files['Cube.vue'] = state.code
+      if (state.tab == '') compileFile('Cube.vue', store)
+    })
   })
 })
 </script>

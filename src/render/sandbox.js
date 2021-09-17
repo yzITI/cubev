@@ -2,13 +2,26 @@ import srcdoc from './src/doc.html?raw'
 import * as Vue from 'vue'
 const { createApp } = Vue
 
+function parseHead (head) {
+  let res = ''
+  const seen = new Set(), parser = new DOMParser()
+  const doc = parser.parseFromString(`<head>${head}</head>`, 'text/html')
+  for (const h of doc.head.children) {
+    if (seen.has(h.outerHTML)) continue
+    seen.add(h.outerHTML)
+    res += h.outerHTML
+  }
+  return res
+}
+
 export class Sandbox {
   constructor (store) {
     this.id = store.id
     this.iframe = document.createElement('iframe')
     this.iframe.setAttribute('sandbox', 'allow-forms allow-modals allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation')
     this.iframe.setAttribute('style', 'border: none; width: 100%; display:block;')
-    this.iframe.srcdoc = srcdoc.replace('<!--HEAD-->', store.head.replace(/\$/g, '$$$$'))
+    const head = parseHead(store.head)
+    this.iframe.srcdoc = srcdoc.replace('<!--HEAD-->', head.replace(/\$/g, '$$$$'))
     this.checkResize = setInterval(() => {
       const w = this.iframe.contentWindow
       this.iframe.height = Number(w && w.document.body && w.document.body.scrollHeight) + 1
