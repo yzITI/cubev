@@ -10,7 +10,8 @@ export class Sandbox {
     this.iframe.setAttribute('style', 'border: none; width: 100%; display:block;')
     this.iframe.srcdoc = srcdoc.replace('<!--HEAD-->', store.head.replace(/\$/g, '$$$$'))
     this.checkResize = setInterval(() => {
-      this.iframe.height = Number(this.iframe.contentWindow && this.iframe.contentWindow.document.body.scrollHeight) + 1
+      const w = this.iframe.contentWindow
+      this.iframe.height = Number(w && w.document.body && w.document.body.scrollHeight) + 1
     }, 300)
   }
   destroy () {
