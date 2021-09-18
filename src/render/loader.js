@@ -1,7 +1,8 @@
 const parser = new DOMParser()
-export default async function (url) {
+
+export default async function ({ url, str }) {
   try {
-    const str = await fetch(url).then(resp => resp.text())
+    if (!str) str = await fetch(url).then(resp => resp.text())
     const doc = parser.parseFromString(str, 'text/html')
     const tpls = doc.querySelectorAll('template')
     const res = {}

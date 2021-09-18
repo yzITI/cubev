@@ -2,8 +2,8 @@
 
 <!-- document head -->
 <template head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
-  <style>html { overflow-y: auto; }</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
+<style>html { overflow-y: auto; }</style>
 </template>
 
 <!-- Vue SFC -->

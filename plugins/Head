@@ -1,6 +1,7 @@
-export const name = 'Head'
+<template name>Head</template>
 
-export const head = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/lib/codemirror.css">
+<template head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/lib/codemirror.css">
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/lib/codemirror.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/mode/javascript/javascript.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/mode/css/css.js"></script>
@@ -8,9 +9,11 @@ export const head = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/c
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/mode/htmlmixed/htmlmixed.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/addon/comment/comment.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/addon/edit/closebrackets.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/addon/edit/closetag.js"></script>`
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/addon/edit/closetag.js"></script>
+</template>
 
-export const view = `<template>
+<template view>
+<template>
   <div class="editor" ref="el"></div>
 </template>
 <script setup>
@@ -44,4 +47,5 @@ onMounted(() => {
   height: auto;
   background: #f9f9f9;
 }
-</style>`
+</style>
+</template>

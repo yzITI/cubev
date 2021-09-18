@@ -1,9 +1,13 @@
-export const name = 'Plugin'
+<template name>Plugin</template>
 
-export const head = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
-<style>html { overflow-y: auto; }</style>`
+<template head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
+<style>html { overflow-y: auto; }</style>
+</template>
 
-export const view = `<template>
+<template view>
+
+<template>
   <div class="m-3">
     <h1 class="title">Plugin Maker</h1>
     <div>
@@ -17,18 +21,22 @@ export const view = `<template>
 <script setup>
 import { watchEffect } from 'vue'
 const { state } = defineProps(['state'])
-let output = \$ref('Test output')
-const parse = s => s.replace(/\\\\/g, '\\\\\\\\').replace(/\\\`/g, '\\\\\\\`').replace(/\\\$/g, '\\\\\\\$')
+let output = $ref('Test output')
 watchEffect(() => {
-  output = \`export const name = '[Plugin Name]'\\n
-export const head = \\\`\${parse(state.head)}\\\`\\n
-export const view = \\\`\${parse(state.code)}\\\`\`
+  output = `<template name>PluginName</template>\n
+<template head>
+${state.head}
+</template>\n
+<template view>
+${state.code}
+</template>`
 })
-let url = \$ref('')
+let url = $ref('')
 async function load () {
-  console.log(url)
-  const f = await import(url)
+  const f = await parent.cubev.load({ url })
   state.code = f.view
   state.head = f.head
 }
-</script>`
+</script>
+
+</template>

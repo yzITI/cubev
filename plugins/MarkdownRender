@@ -1,31 +1,28 @@
-export const name = 'MarkdownRender'
+<template name>MarkdownRender</template>
 
-export const head = `<script src="https://cdn.jsdelivr.net/npm/markdown-it@12.0.3/dist/markdown-it.min.js"></script>
+<template head>
+<script src="https://cdn.jsdelivr.net/npm/markdown-it@12.0.3/dist/markdown-it.min.js"></script>
 <script type="text/javascript">
-  window.MathJax = {
-    tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], formatError: (jax, err) => jax.formatError(err) },
-    options: { enableMenu: false }
-  }
+window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], formatError: (jax, err) => jax.formatError(err) }, options: { enableMenu: false } }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/styles/default.min.css">
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/highlight.min.js"></script>
 <style>
-  * { outline: none; }
-  mjx-container { max-width: 95%; overflow: auto; }
-  blockquote {
-    padding: 10px;
-    margin: 10px 0;
-    border-left: 5px solid #ccc;
-    border-radius: 3px;
-  }
-  blockquote * {
-    margin: 0;
-  }
-</style>`
+* { outline: none; }
+mjx-container { max-width: 95%; overflow: auto; }
+blockquote {
+  padding: 10px;
+  margin: 10px 0;
+  border-left: 5px solid #ccc;
+  border-radius: 3px;
+}
+blockquote * { margin: 0; }
+</style>
+</template>
 
-// extra member
-export const code = `<template>
+<template code>
+<template>
   <div v-html="md"></div>
 </template>
 
@@ -46,4 +43,5 @@ let md = $computed(() => {
 div {
   padding: 0 16px;
 }
-</style>`
+</style>
+</template>
