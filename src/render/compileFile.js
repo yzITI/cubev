@@ -52,12 +52,12 @@ export default async function (filename, store) {
 
   const hasScoped = descriptor.styles.some(s => s.scoped)
   let clientCode = ''
-
   const clientScriptResult = await doCompileScript(descriptor, id, store)
+
   if (!clientScriptResult) return
   const [clientScript, bindings] = clientScriptResult
   clientCode += clientScript
-
+  
   // template
   // only need dedicated compilation if not using <script setup>
   if (descriptor.template && !descriptor.scriptSetup) {

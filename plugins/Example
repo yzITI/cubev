@@ -1,4 +1,15 @@
-export const code = `<template>
+<template name>Example</template>
+
+<!-- document head -->
+<template head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
+<style>html { overflow-y: auto; }</style>
+</template>
+
+<!-- Vue SFC -->
+<template view>
+
+<template>
   <div class="content">
     <p>Here is an example with Bulma (in Head).</p>
     <h1>{{ msg }}</h1>
@@ -18,7 +29,6 @@ const { context } = defineProps(['context'])
 div {
   padding: 16px;
 }
-</style>`
+</style>
 
-export const head = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
-<style>html { overflow-y: auto; }</style>`
+</template>
