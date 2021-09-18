@@ -1,14 +1,13 @@
 <script setup>
 import Cubev from './Cubev.vue'
-import { parse } from './render/pluginLoader.js'
-import Code from '../plugins/Code?raw'
-import Head from '../plugins/Head?raw'
+import Source from '../plugins/Source?raw'
 import Markdown from '../plugins/Markdown?raw'
 import MarkdownRender from '../plugins/MarkdownRender?raw'
-let state1 = $ref({})
-const plugins1 = [parse(Code), parse(Head)]
+const parse = window.cubev.parse
+let state1 = $ref({ tab: 'Source' })
+const plugins1 = [parse(Source)]
 const plugins2 = [parse(Markdown), parse(MarkdownRender)]
-let state2 = $ref({ code: plugins2[1].code })
+let state2 = $ref({ src: plugins2[1].src })
 </script>
 
 <template>

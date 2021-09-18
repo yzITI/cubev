@@ -1,4 +1,4 @@
-<template name>Head</template>
+<template name>Source</template>
 
 <template head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.62.3/lib/codemirror.css">
@@ -13,6 +13,7 @@
 </template>
 
 <template view>
+
 <template>
   <div class="editor" ref="el"></div>
 </template>
@@ -34,10 +35,10 @@ onMounted(() => {
   })
   editor.on('change', () => {
     code = editor.getValue()
-    state.head = code
+    state.src = code
   })
   watchEffect(() => {
-    if (state.head != code) editor.setValue(state.head)
+    if (state.src != code) editor.setValue(state.src)
   })
   setTimeout(() => { editor.refresh() }, 50)
 })
@@ -48,4 +49,5 @@ onMounted(() => {
   background: #f9f9f9;
 }
 </style>
+
 </template>

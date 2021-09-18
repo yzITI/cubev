@@ -21,11 +21,12 @@ blockquote * { margin: 0; }
 </style>
 </template>
 
-<template code>
+<template src>
+
+<template view>
 <template>
   <div v-html="md"></div>
 </template>
-
 <script setup>
 import { nextTick } from 'vue'
 const mmp = window.markdownit({ html: true })
@@ -38,10 +39,11 @@ let md = $computed(() => {
   return mmp.render(state.markdown || '')
 })
 </script>
-
 <style scoped>
 div {
   padding: 0 16px;
 }
 </style>
+</template>
+
 </template>

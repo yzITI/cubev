@@ -42,12 +42,7 @@ onMounted(() => {
   state.id = store.id
   window.cubev.cubes[state.id] = state
   if (!state.tab) state.tab = ''
-  if (!state.head) state.head = ''
-  if (!state.code) {
-    const ex = window.cubev.pluginLoader.parse(Example)
-    state.code = ex.view
-    state.head = ex.head
-  }
+  if (!state.src) state.src = Example
   watch(() => plugins, (v) => { // process plugins
     pluginsHead.value = ''
     store.tabs = []
@@ -63,13 +58,16 @@ onMounted(() => {
       }
     }
     const importPlugin = store.tabs.map(x => `import ${x} from './${x}/View.vue'`).join('\n')
-    store.files['Cube.vue'] = state.code
+    const cube = window.cubev.parse(state.src)
+    store.head = pluginsHead.value + cube.head
+    store.files['Cube.vue'] = cube.view
     store.files['App.vue'] = srcApp.replace('/* IMPORT_PLUGIN */', importPlugin).replace('/* PLUGIN_LIST */', store.tabs.join(', '))
   }, { immediate: true, deep: true })
 
   watchEffect(() => {
-    if (state.tab !== 'Head') store.head = pluginsHead.value + state.head
-    if (state.tab === '') store.files['Cube.vue'] = state.code
+    const cube = window.cubev.parse(state.src)
+    if (state.tab !== 'Source') store.head = pluginsHead.value + cube.head
+    if (state.tab === '') store.files['Cube.vue'] = cube.view
   })
 })
 </script>
