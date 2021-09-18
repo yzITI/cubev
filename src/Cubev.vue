@@ -21,7 +21,7 @@ const { state, plugins, hideBar, title } = defineProps({
   state: { default: {}, required: true },
   title: { default: '' }, // title on the bar
   hideBar: { default: false }, // hide functional bar
-  plugins: { default: [] } // enabled plugins(module)
+  plugins: { default: [] } // enabled plugins(object)
 })
 
 const ready = ref(false)
@@ -76,11 +76,12 @@ onMounted(() => {
     await compileFile('Cube.vue', store)
     await compileFile('App.vue', store)
     ready.value = true
-    watchEffect(() => {
-      if (state.tab != 'Head') store.head = pluginsHead + state.head
-      store.files['Cube.vue'] = state.code
-      if (state.tab == '') compileFile('Cube.vue', store)
-    })
+    
+  })
+  watchEffect(() => {
+    if (state.tab != 'Head') store.head = pluginsHead + state.head
+    store.files['Cube.vue'] = state.code
+    if (state.tab == '') compileFile('Cube.vue', store)
   })
 })
 </script>
