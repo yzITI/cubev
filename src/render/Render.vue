@@ -3,8 +3,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, watchEffect } from 'vue'
 import { Sandbox } from './sandbox.js'
+import compileFile from './compileFile.js'
 import compileModule from './compileModule.js'
 
 const container = ref()
@@ -22,18 +23,25 @@ onUnmounted(() => {
   sandbox.destroy()
 })
 
+async function compileAllFiles () {
+  for (const f in store.files) await compileFile(f, store)
+}
+
 function createSandbox() {
+  if (stopWatch) stopWatch()
   if (sandbox) { // clear prev sandbox
     container.value.removeChild(sandbox.iframe)
     sandbox.destroy()
   }
-  if (stopWatch) stopWatch()
   sandbox = new Sandbox(store)
   container.value.appendChild(sandbox.iframe)
   sandbox.iframe.addEventListener('load', () => {
     console.log(`[Cubev ${store.id}] sandbox setup.`)
     setTimeout(() => {
-      stopWatch = watch(store.compiled, updateRender, { immediate: true })
+      stopWatch = watch(store.files, async () => {
+        await compileAllFiles()
+        updateRender()
+      }, { immediate: true })
     }, 30)
   })
 }
