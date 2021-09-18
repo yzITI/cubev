@@ -1,8 +1,8 @@
 import { reactive } from 'vue'
-import loader from './render/loader.js'
+import * as pluginLoader from './render/pluginLoader.js'
 if (!window.cubev) window.cubev = {
   count: 0,
-  load: loader,
+  pluginLoader,
   context: reactive({}),
   cubes: {} // instances
 }

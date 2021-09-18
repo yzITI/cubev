@@ -38,13 +38,13 @@ const store = reactive({ // internal state
 onUnmounted(() => { delete window.cubev.cubes[state.id] })
 
 const pluginsHead = ref('')
-onMounted(async () => {
+onMounted(() => {
   state.id = store.id
   window.cubev.cubes[state.id] = state
   if (!state.tab) state.tab = ''
   if (!state.head) state.head = ''
   if (!state.code) {
-    const ex = await window.cubev.load({ str: Example })
+    const ex = window.cubev.pluginLoader.parse(Example)
     state.code = ex.view
     state.head = ex.head
   }

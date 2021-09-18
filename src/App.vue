@@ -1,23 +1,20 @@
 <script setup>
 import Cubev from './Cubev.vue'
-import loader from './render/loader.js'
+import { parse } from './render/pluginLoader.js'
 import Code from '../plugins/Code?raw'
 import Head from '../plugins/Head?raw'
-import Plugin from '../plugins/Plugin?raw'
+import Markdown from '../plugins/Markdown?raw'
+import MarkdownRender from '../plugins/MarkdownRender?raw'
 let state1 = $ref({})
-const plugins = {}
-async function init () {
-  plugins.push(await loader({ str: Code }))
-  plugins.push(await loader({ str: Head }))
-  plugins.push(await loader({ str: Plugin }))
-}
-init()
+const plugins1 = [parse(Code), parse(Head)]
+const plugins2 = [parse(Markdown), parse(MarkdownRender)]
+let state2 = $ref({ code: plugins2[1].code })
 </script>
 
 <template>
-  <cubev :state="state1" :plugins="plugins"></cubev>
+  <cubev :state="state1" :plugins="plugins1"></cubev>
   <div style="height: 50px;" />
-  <cubev title="Markdown" :state="state2" :plugins=""></cubev>
+  <cubev title="Markdown" :state="state2" :plugins="plugins2"></cubev>
   <div style="height: 500px;" />
 </template>
 
