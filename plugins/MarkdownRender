@@ -1,13 +1,13 @@
 <template name>MarkdownRender</template>
 
 <template head>
-<script src="https://cdn.jsdelivr.net/npm/markdown-it@12.0.3/dist/markdown-it.min.js"></script>
-<script type="text/javascript">
+<script async src="https://cdn.jsdelivr.net/npm/markdown-it@12.0.3/dist/markdown-it.min.js"></script>
+<script async type="text/javascript">
 window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], formatError: (jax, err) => jax.formatError(err) }, options: { enableMenu: false } }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/styles/default.min.css">
-<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/highlight.min.js"></script>
+<script async src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.2.0/build/highlight.min.js"></script>
 <style>
 * { outline: none; }
 mjx-container { max-width: 95%; overflow: auto; }
