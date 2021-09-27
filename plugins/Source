@@ -26,7 +26,6 @@ onMounted(() => {
     value: '',
     mode: 'htmlmixed',
     tabSize: 2,
-    lineWrapping: true,
     lineNumbers: true,
     scrollbarStyle: null,
     viewportMargin: Infinity,

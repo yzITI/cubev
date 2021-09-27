@@ -1,7 +1,7 @@
 <template>
-  <div v-if="error || warning" style="width: 100%; border-top: 1px solid #ccc;">
-    <pre v-if="error" style="color: red; overflow-x: auto; padding: 0 8px;">{{ error }}</pre>
-    <pre v-if="warning" style="color: yellow; overflow-x: auto; padding: 0 8px;">{{ warning }}</pre>
+  <div v-if="error || warning" style="width: 100%; border-top: 1px solid #ccc; overflow-x: auto;">
+    <pre v-if="error" style="color: red; padding: 0 8px;">{{ error }}</pre>
+    <pre v-if="warning" style="color: yellow; padding: 0 8px;">{{ warning }}</pre>
   </div>
 </template>
 

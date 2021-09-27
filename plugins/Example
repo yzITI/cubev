@@ -1,5 +1,3 @@
-<template name>Example</template>
-
 <!-- document head -->
 <template head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@latest/css/bulma.min.css">
@@ -8,15 +6,15 @@
 
 <!-- Vue SFC -->
 <template view>
-
 <template>
-  <div class="content">
-    <p>Here is an example with Bulma (in Head).</p>
+  <div class="content p-3">
+    <p>Here is an example with Bulma.</p>
     <h1>{{ msg }}</h1>
     <input class="input" v-model="msg">
     <hr>
     <p>The following input is reactive across multiple Cubev components</p>
     <input class="input" placeholder="reactive message" v-model="context.msg">
+    <button class="button is-primary m-2" @click="context.msg = 'Hello'">Say Hello!</button>
   </div>
 </template>
 
@@ -24,11 +22,4 @@
 let msg = $ref('Welcome to Cubev!')
 const { context } = defineProps(['context'])
 </script>
-
-<style scoped>
-div {
-  padding: 16px;
-}
-</style>
-
 </template>
